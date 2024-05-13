@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Map</class>
+ <widget class="QWidget" name="Map">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1080</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1800</width>
+    <height>900</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1920</width>
+    <height>1080</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QGraphicsView {
+	background-image: url(:/bg/resourses/images/map.jpg);
+}
+
+QPushButton {
+	background: rgba(208, 178, 203, 0.7);
+	border: 10px white;
+	color: white;
+}
+
+QPushButton:hover {
+    background: rgba(208, 178, 203, 0.5);
+}
+
+
+QPushButton:pressed {
+    background: rgb(183, 130, 174);
+}
+
+</string>
+  </property>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1920</width>
+     <height>1080</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="settingsBtn">
+   <property name="geometry">
+    <rect>
+     <x>1870</x>
+     <y>10</y>
+     <width>42</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	background: rgb(208, 178, 203);
+	font: 35px;
+	border: 10px white;
+	border-radius: 20px;
+	color: white;
+}
+
+QPushButton:hover {
+    background: rgba(208, 178, 203, 0.5);
+}
+
+
+QPushButton:pressed {
+    background: rgb(183, 130, 174);
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>40</width>
+     <height>40</height>
+    </size>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

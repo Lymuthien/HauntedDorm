@@ -25,7 +25,7 @@ Map::Map(QWidget *parent)
     connect(humanAndDoorTimer, &QTimer::timeout, this, &Map::openDoorInRoom);
     humanAndDoorTimer->start();
 
-    _human->setPos(57*15, 57*9-20);
+    _human->setPos(57*15, 57*9);
     _scene->addItem(_human);
 
     connect(ui->settingsBtn, &QPushButton::clicked, this, &Map::settingsBtnClicked);
@@ -56,11 +56,16 @@ void Map::buildWalls() {
 void Map::buildRooms() {
     for (int i = 0; i < 2; ++i)
         for (int j = 0; j < 3; ++j) {
-            _rooms.append(new Room(i));
-            _rooms[i * 3 + j]->setPos(57 * (1 + QRandomGenerator::global()->bounded(0, 2)) + j * 11 * 57,
-                              57 * (2 + 9 * i + QRandomGenerator::global()->bounded(0, 2)));
+            _rooms.append(new Room(i, this));
+            QPointF pos1(57 * (1 + QRandomGenerator::global()->bounded(0, 2)) + j * 11 * 57,
+                         57 * (2 + 9 * i + QRandomGenerator::global()->bounded(0, 2)));
+            _rooms[i * 3 + j]->setPos(pos1);
             _scene->addItem(_rooms[i * 3 + j]);
             _rooms[i*3+j]->createSleepButton(this);
+            connect(_rooms[i*3+j], &Room::sleepBtnClicked, this, [=]() {
+                _human->setPos(57*15, 57*9);
+            });
+            _rooms[i*3+j]->createInteractBtns(this);
         }
 }
 
@@ -94,24 +99,22 @@ Map::~Map()
 
 void Map::openDoorInRoom() {
     for (int i = 0; i < 6; ++i) {
-        if (abs(_human->y() - (_rooms[i]->getDoor()->y()+_rooms[i]->y())) <= 57*2
-            && abs(_human->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57*2)
-            _rooms[i]->startOpeningDoor();
-        else
-            _rooms[i]->startClosingDoor();
+        if (_rooms[i]->isFree()) {
+            if (abs(_human->y() - (_rooms[i]->getDoor()->y()+_rooms[i]->y())) <= 57*2
+                && abs(_human->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57*2)
+                _rooms[i]->startOpeningDoor();
+            else
+                _rooms[i]->startClosingDoor();
 
-        if (abs(_human->y() - (_rooms[i]->getBed()->y()+_rooms[i]->y())) <= 57
-            && abs(_human->x() - (_rooms[i]->getBed()->x()+_rooms[i]->x())) <= 57 + 5)
-            if (_rooms[i]->isFree())
-                _rooms[i]->showSleepBtn(true);
+            if (abs(_human->y() - (_rooms[i]->getBed()->y()+_rooms[i]->y())) <= 57
+                && abs(_human->x() - (_rooms[i]->getBed()->x()+_rooms[i]->x())) <= 57 + 5)
+                if (_rooms[i]->isFree())
+                    _rooms[i]->showSleepBtn(true);
+                else
+                    _rooms[i]->showSleepBtn(false);
             else
                 _rooms[i]->showSleepBtn(false);
-        else
-            _rooms[i]->showSleepBtn(false);
-
-
-
-
+        }
     }
 }
 

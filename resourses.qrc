@@ -8,6 +8,8 @@
         <file>resourses/images/addBuilding-cage.png</file>
         <file>resourses/images/floor-room-cage.jpg</file>
         <file>resourses/images/door.jpg</file>
+        <file>resourses/images/dota.png</file>
+        <file>resourses/images/hookah.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resourses/styles/styles.css</file>

@@ -2,6 +2,7 @@
 #define FLOORCAGE_H
 
 #include "cage.h"
+#include "addbuildingform.h"
 
 class FloorCage : public Cage
 {
@@ -23,11 +24,10 @@ public:
     int getMoneyPerSec();
     int getEnergyPerSec();
     int getCost();
-
-private slots:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void clicked();
 
 private:
+    AddBuildingForm* _form;
     QPixmap _emptyPixmap;
     bool _free = true;
     bool _visible = false;

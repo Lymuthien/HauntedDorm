@@ -12,6 +12,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    addbuildingform.cpp \
     bed.cpp \
     cage.cpp \
     door.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     settings.cpp
 
 HEADERS += \
+    addbuildingform.h \
     bed.h \
     cage.h \
     door.h \
@@ -39,6 +41,7 @@ HEADERS += \
     settings.h
 
 FORMS += \
+    addbuildingform.ui \
     mainwindow.ui \
     map.ui \
     menu.ui \

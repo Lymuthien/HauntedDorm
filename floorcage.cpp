@@ -1,7 +1,7 @@
 #include "floorcage.h"
 
 FloorCage::FloorCage(QPixmap pixmap, QObject *parent)
-    : Cage{pixmap}, _emptyPixmap(pixmap)
+    : Cage{pixmap}, _form(new AddBuildingForm), _emptyPixmap(pixmap)
 {}
 
 void FloorCage::setBuilding(BuildingType type)
@@ -25,6 +25,7 @@ void FloorCage::setBuilding(BuildingType type)
     _visible = true;
 }
 
+
 void FloorCage::deleteBuilding()
 {
     _moneyPerSec = 0;
@@ -32,17 +33,18 @@ void FloorCage::deleteBuilding()
     _cost = 0;
     _pixmap = _emptyPixmap;
     _free = true;
-    //извне ставится setVisible при вызове
 }
 
-void FloorCage::mousePressEvent(QGraphicsSceneMouseEvent *event)
+
+void FloorCage::clicked()
 {
     if (_free) //вызов меню постройки
-        ;
+    {
+        _form->show();
+    }
     else
         //вызов меню улучшения
-        ;
-    QGraphicsItem::mousePressEvent(event);
+        _form->show();
 }
 
 bool FloorCage::isVisible()

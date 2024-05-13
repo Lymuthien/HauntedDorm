@@ -26,8 +26,11 @@ public:
     void startClosingDoor();
     void showSleepBtn(bool show);
     void createSleepButton(QWidget* w);
+    QVector<FloorCage*> getInteractFloor();
+    void createInteractBtns(QWidget* w);
 
 signals:
+    void sleepBtnClicked();
 
 private:
     void moveDoor(bool open);
@@ -40,10 +43,9 @@ private:
     void buildRoom3(bool doorUp, int flag = 0);
     void buildRoom4(bool doorUp, int flag = 0);
 
-
+    QVector<FloorCage*> _interactFloor;
     QVector<QGraphicsPixmapItem*> _floor;
     QVector<Cage*> _walls;
-    QVector<FloorCage*> _interactFloor;
     Bed* _bed;
     Door* _door;
     QTimer* openDoorTimer;
@@ -52,6 +54,7 @@ private:
     bool _free = true;
     QPointF beginDoorPos;
     QPushButton* sleepBtn;
+    QVector<QPushButton*> _interactBtns;
 };
 
 #endif // ROOM_H

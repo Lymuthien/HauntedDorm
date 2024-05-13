@@ -2,6 +2,7 @@
 #define BED_H
 
 #include "cage.h"
+#include "addbuildingform.h"
 
 class Bed : public Cage
 {

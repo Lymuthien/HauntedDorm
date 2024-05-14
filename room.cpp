@@ -35,7 +35,7 @@ Room::Room(bool doorUp, QObject* parent)
 
 Room::~Room() {
     delete _bed;
-    delete _door;
+    //delete _door;
     delete _openDoorTimer;
     delete _closeDoorTimer;
     delete _sleepBtn;
@@ -96,6 +96,7 @@ void Room::showInteractingCages() {
 
 void Room::setHuman(Human* human) {
     _human = human;
+    _human->setInRoom();
     setFree(false);
 }
 void Room::setFree(bool status) {

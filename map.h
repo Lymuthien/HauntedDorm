@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 
+#include "ghost.h"
 #include "room.h"
 #include "human.h"
 
@@ -24,11 +25,12 @@ public:
 signals:
     void settingsBtnClicked();
     void btnClicked();
-    void ghostAppear();
 
 private slots:
     void keyPressEvent(QKeyEvent* event);
     void on_timeBeforeGhost_timeChanged(const QTime &time);
+
+    void on_gameTime_timeChanged(const QTime &time);
 
 private:
     void buildWalls();
@@ -36,6 +38,7 @@ private:
     void openDoorInRoom();
     void initHumanBots();
     void initGhost();
+    void moveGhostHp();
 
     Ui::Map *ui;
     
@@ -48,6 +51,8 @@ private:
     QVector<Room*> _rooms;
     Human* _human;
     QVector<Human*> _humanBots;
+    Ghost* _ghost;
+    QVector<QPoint> _ghostHillZone;
 };
 
 #endif // MAP_H

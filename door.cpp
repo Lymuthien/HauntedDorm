@@ -36,4 +36,5 @@ int Door::getHp()
 void Door::setHp(int hp)
 {
     _hp = hp;
+    emit hpChanged();
 }

@@ -5,8 +5,8 @@
 #include <QPainter>
 #include <QTimer>
 
-Human::Human(const QPixmap pixmap, QObject *parent)
-    : QObject{parent}, QGraphicsItem(), _pixmap(pixmap)
+Human::Human(const QPixmap pixmap, int width, int height, QObject *parent)
+    : QObject{parent}, QGraphicsItem(), _pixmap(pixmap), _pixmapWidth(width), _pixmapHeight(height)
 {}
 
 void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
@@ -19,12 +19,12 @@ void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     else
         _posBeforeCollision = currentPos;
 
-    painter->drawPixmap(QRect(0, 0, 50, 100), _pixmap);
+    painter->drawPixmap(QRect(0, 0, _pixmapWidth, _pixmapHeight), _pixmap);
 }
 
 QRectF Human::boundingRect() const
 {
-    return QRectF(0, 0, 50, 100);
+    return QRectF(0, 0, _pixmapWidth, _pixmapHeight);
 }
 
 void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
@@ -68,6 +68,18 @@ void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
 
 int Human::getSpeed() {
     return _speed;
+}
+
+void Human::setInRoom() {
+    _inRoom = true;
+}
+
+bool Human::isInRoom() {
+    return _inRoom;
+}
+
+void Human::setSpeed(int speed) {
+    _speed = speed;
 }
 
 

@@ -40,6 +40,8 @@ private:
     bool* getSettings();
     void setSettings(int number, bool value);
 
+    void readCache();
+
     MainWindow* _window;
     State _state = Uninitialized;
     QMap<State, int> _stateInstances;
@@ -49,7 +51,7 @@ private:
     QSoundEffect _sound[3];
     bool _settings[4] = {1, 1, 1, 0};
 
-    Settings* SettingsForm;
+    Settings* SettingsForm = nullptr;
     Menu* menu;
     Map* map = nullptr;
 

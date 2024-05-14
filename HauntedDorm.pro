@@ -17,6 +17,7 @@ SOURCES += \
     cage.cpp \
     door.cpp \
     floorcage.cpp \
+    gameover.cpp \
     ghost.cpp \
     haunteddormgame.cpp \
     human.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     cage.h \
     door.h \
     floorcage.h \
+    gameover.h \
     ghost.h \
     haunteddormgame.h \
     human.h \
@@ -46,6 +48,7 @@ HEADERS += \
 
 FORMS += \
     addbuildingform.ui \
+    gameover.ui \
     mainwindow.ui \
     map.ui \
     menu.ui \
@@ -64,6 +67,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     c \
+    cache \
     images/icon.png \
     setting-style.qss
 

@@ -12,6 +12,8 @@
         <file>resourses/images/hookah.png</file>
         <file>resourses/images/ps4.png</file>
         <file>resourses/images/Hammer.png</file>
+        <file>resourses/images/ghost.png</file>
+        <file>resourses/images/6-bybe.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resourses/styles/styles.css</file>
@@ -30,5 +32,8 @@
         <file>resourses/music/hitting-door-sound.wav</file>
         <file>resourses/music/button-in-menu-pressed.wav</file>
         <file>resourses/music/quite-pressing.wav</file>
+    </qresource>
+    <qresource prefix="/textfiles">
+        <file>cache</file>
     </qresource>
 </RCC>

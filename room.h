@@ -30,13 +30,13 @@ public:
     void showSleepBtn(bool show);
     void createSleepButton(QWidget* w);
     QVector<FloorCage*> getInteractFloor();
-    void createInteractBtns(QWidget* w);
 
 signals:
     void sleepBtnClicked();
 
 private:
     void moveDoor(bool open);
+    void createInteractBtns(QWidget* w);
     void setDoorCoordinates(bool doorUp, QPointF pos1, QPointF pos2);
     void addFloor(int maxI, int maxJ);
     void addAllItems();

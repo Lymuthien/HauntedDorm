@@ -1,8 +1,5 @@
 #include "map.h"
-#include "ghost.h"
 #include "ui_map.h"
-#include "cage.h"
-#include "human.h"
 
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
@@ -34,6 +31,11 @@ Map::Map(QWidget *parent)
 
     connect(ui->settingsBtn, &QPushButton::clicked, this, &Map::settingsBtnClicked);
     connect(ui->settingsBtn, &QPushButton::clicked, this, &Map::btnClicked);
+
+    ui->gameTime->hide();
+    ui->doorHp->hide();
+    ui->ghostHp->hide();
+    initGhost();
 }
 
 void Map::buildWalls() {
@@ -41,8 +43,11 @@ void Map::buildWalls() {
         _walls.append(new Cage(QPixmap(":/images/resourses/images/wall.jpg")));
 
     for (int i = 0, j = 0; i < WALL_COUNT_WIDTH; ++i) {
-        if (i == WALL_COUNT_WIDTH / 3 || i == WALL_COUNT_WIDTH * 2 / 3)
+        if (i == WALL_COUNT_WIDTH / 3 || i == WALL_COUNT_WIDTH * 2 / 3) {
+            _ghostHillZone.append(QPoint(57*i, 0));
+            _ghostHillZone.append(QPoint(57*i, 1080-57));
             continue;
+        }
         _walls[j*2]->setPos(57 * i, 0);
         _walls[j*2 + 1]->setPos(57 * i, 1080-57);
         ++j;
@@ -82,9 +87,13 @@ void Map::buildRooms() {
             connect(_rooms[i*3+j], &Room::sleepBtnClicked, this, [=]() {
                 _human->setPos(57*15, 57*9);
                 _rooms[i*3+j]->setHuman(_human);
+                ui->doorHp->setGeometry(_rooms[i*3+j]->getDoor()->x() + _rooms[i*3+j]->x() + 3,
+                                        _rooms[i*3+j]->getDoor()->y() + _rooms[i*3+j]->y() - 16, 51, 14);
+                ui->doorHp->setMaximum(_rooms[i*3+j]->getDoor()->getMaxHp());
+                ui->doorHp->show();
+                connect(_rooms[i*3+j]->getDoor(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(_rooms[i*3+j]->getDoor()->getHp());} );
                 //тут будет смена спрайта кровати
             });
-            _rooms[i*3+j]->createInteractBtns(this);
         }
 }
 
@@ -136,19 +145,39 @@ void Map::openDoorInRoom() {
 }
 
 void Map::initGhost() {
-    Ghost* g = new Ghost(QPixmap(":/images/resourses/images/pngwing.com.png"));
-    _scene->addItem(g);
-    g->setPos(57*9, 57*15);
+    _ghost = new Ghost(QPixmap(":/images/resourses/images/ghost.png"), _ghostHillZone, 50, 50);
+    _scene->addItem(_ghost);
+    _ghost->setPos(57*11, 57*9);
+    connect(_ghost, &Ghost::moved, this, &Map::moveGhostHp);
+}
+
+void Map::moveGhostHp() {
+    ui->ghostHp->setGeometry(_ghost->x(), _ghost->y() - 16, 51, 14);
+    ui->ghostHp->show();
 }
 
 void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
 {
     if (!time.second()) {
         initGhost();
+        ui->gameTime->show();
+        ui->timeBeforeGhost->hide();
+        ui->gameTime->setTime(ui->gameTime->time().addSecs(1));
         return;
+    }
+    if (time.second() == 10) {
+        ui->timeBeforeGhost->setStyleSheet("font: 35px; color: rgb(234, 215, 217);");
     }
     QTimer* t = new QTimer();
     connect(t, &QTimer::timeout, this, [=]() { ui->timeBeforeGhost->setTime(time.addSecs(-1)); t->stop(); delete t;});
+    t->start(1000);
+}
+
+
+void Map::on_gameTime_timeChanged(const QTime &time)
+{
+    QTimer* t = new QTimer();
+    connect(t, &QTimer::timeout, this, [=]() { ui->gameTime->setTime(time.addSecs(1)); t->stop(); delete t;});
     t->start(1000);
 }
 

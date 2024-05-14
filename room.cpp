@@ -10,7 +10,7 @@
 
 Room::Room(bool doorUp, QObject* parent)
     : QObject{parent}, QGraphicsItemGroup(), _bed(new Bed(QPixmap(":/images/resourses/images/bed.png")))
-    , _door(new Door(QPixmap(":/images/resourses/images/door.jpg"))), openDoorTimer(new QTimer(this)), closeDoorTimer(new QTimer(this))
+    , _door(new Door(QPixmap(":/images/resourses/images/door.jpg"))), _openDoorTimer(new QTimer(this)), _closeDoorTimer(new QTimer(this))
 {
     for (int i = 0; i < 14; ++i)
         _interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png")));
@@ -22,10 +22,10 @@ Room::Room(bool doorUp, QObject* parent)
     else if (roomNumber == 3) buildRoom3(doorUp);
     else if (roomNumber == 4) buildRoom4(doorUp);
 
-    openDoorTimer->setInterval(30);
-    closeDoorTimer->setInterval(30);
-    connect(openDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(true); });
-    connect(closeDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(false); });
+    _openDoorTimer->setInterval(30);
+    _closeDoorTimer->setInterval(30);
+    connect(_openDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(true); });
+    connect(_closeDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(false); });
 
     for (int i = 0; i < 14; ++i)
         _interactFloor[i]->setVisible(false);
@@ -33,40 +33,74 @@ Room::Room(bool doorUp, QObject* parent)
     addAllItems();
 }
 
+Room::~Room() {
+    delete _bed;
+    delete _door;
+    delete _openDoorTimer;
+    delete _closeDoorTimer;
+    delete _sleepBtn;
+    for (int i = 0; i < _floor.count(); ++i)
+        delete _floor[i];
+    for (int i = 0; i < _walls.count(); ++i)
+        delete _walls[i];
+    for (int i = 0; i < _interactBtns.count(); ++i)
+        delete _interactBtns[i];
+
+    /*
+    QVector<FloorCage*> _interactFloor;
+    Human* _human;*/
+}
+
 void Room::createSleepButton(QWidget* w) {
-    sleepBtn = new QPushButton("СПАТЬ", w);
-    connect(sleepBtn, &QPushButton::clicked, this, [=]() {
+    _sleepBtn = new QPushButton("СПАТЬ", w);
+    connect(_sleepBtn, &QPushButton::clicked, this, [=]() {
         emit sleepBtnClicked();
+        _sleepBtn->hide();
         setFree(false);
         createInteractBtns(w);
         showInteractingCages();
     });
-    sleepBtn->setGeometry(_bed->x()+this->x()-42, _bed->y()+this->y()+57*2, 85, 25);
+    _sleepBtn->setGeometry(_bed->x()+this->x()-42, _bed->y()+this->y()+57*2, 85, 25);
 }
 
 void Room::createInteractBtns(QWidget* w) {
-    for (int i = 0; i < _interactFloor.count(); ++i) {
+    for (int i = 0; i < 14; ++i) {
         _interactBtns.append(new QPushButton("+", w));
-        _interactBtns[i]->setStyleSheet("QPushButton { background: rgba(213, 213, 214, 0.2);"
-                              "font: 25px; border: 10px white; color: white; }"
-                              "QPushButton:hover { background: rgba(213, 213, 214, 0.1); }"
-                              "QPushButton:pressed { background: rgba(190, 190, 191, 0.5); }");
+        _interactBtns[i]->setStyleSheet("QPushButton { background: rgba(213, 213, 214, 0.2); font: 25px; border: 10px white; color: white; }"
+                              "QPushButton:hover { background: rgba(213, 213, 214, 0.1); } QPushButton:pressed { background: rgba(190, 190, 191, 0.5); }");
         connect(_interactBtns[i], &QPushButton::clicked, _interactFloor[i], &FloorCage::clicked);
         _interactBtns[i]->setGeometry(_interactFloor[i]->x() + this->x() + 13, _interactFloor[i]->y()+this->y() + 13, 30, 30);
+    }
+    for (int i = 0; i < 2; ++i) {
+        _interactBtns.append(new QPushButton("*", w));
+        _interactBtns[i+14]->setStyleSheet("QPushButton { background: rgba(221, 180, 226, 0.2); font: 25px; border: 10px white; color: white; }"
+                                         "QPushButton:hover { background: rgba(221, 180, 226, 0.1); } QPushButton:pressed { background: rgba(167, 113, 173, 0.5); }");
+    }
+    connect(_interactBtns[14], &QPushButton::clicked, _bed, &Bed::clicked);
+    connect(_interactBtns[15], &QPushButton::clicked, _door, &Door::clicked);
+    _interactBtns[14]->setGeometry(_bed->x() + this->x() + 15, _bed->y()+this->y() + 64, 30, 31);
+    _interactBtns[15]->setGeometry(_door->x() + this->x() + 15, _door->y()+this->y() + 23, 30, 31);
+    for (int i = 0; i < 16; ++i) {
         _interactBtns[i]->hide();
     }
 }
-
 
 void Room::showInteractingCages() {
     for (int i = 0; i < _interactFloor.count(); ++i) {
         _interactFloor[i]->setVisible(true);
         _interactBtns[i]->show();
     }
+    for (int i = 0; i < 2; ++i)
+        _interactBtns[14+i]->show();
 }
 
+void Room::setHuman(Human* human) {
+    _human = human;
+    setFree(false);
+}
 void Room::setFree(bool status) {
     _free = status;
+    startClosingDoor();
 }
 
 bool Room::isFree() {
@@ -74,7 +108,7 @@ bool Room::isFree() {
 }
 
 QPushButton* Room::getSleepBtn() {
-    return sleepBtn;
+    return _sleepBtn;
 }
 
 QVector<FloorCage*> Room::getInteractFloor() {
@@ -90,31 +124,31 @@ Bed* Room::getBed() {
 }
 
 void Room::startOpeningDoor() {
-    closeDoorTimer->stop();
-    openDoorTimer->start();
+    _closeDoorTimer->stop();
+    _openDoorTimer->start();
 }
 
 void Room::startClosingDoor() {
-    openDoorTimer->stop();
-    closeDoorTimer->start();
+    _openDoorTimer->stop();
+    _closeDoorTimer->start();
 }
 
 void Room::showSleepBtn(bool show) {
     if (show)
-        sleepBtn->show();
+        _sleepBtn->show();
     else
-        sleepBtn->hide();
+        _sleepBtn->hide();
 }
 
 void Room::moveDoor(bool open) {
     if (open)
-        if(abs(beginDoorPos.x()-_door->pos().x()) == 57)
-            openDoorTimer->stop();
+        if(abs(_beginDoorPos.x()-_door->pos().x()) == 57)
+            _openDoorTimer->stop();
         else
             _door->setPos(_door->pos().x() - 3, _door->pos().y());
     else
-        if(abs(beginDoorPos.x()-_door->pos().x()) == 0)
-            closeDoorTimer->stop();
+        if(abs(_beginDoorPos.x()-_door->pos().x()) == 0)
+        _closeDoorTimer->stop();
         else
             _door->setPos(_door->pos().x() + 3, _door->pos().y());
 }
@@ -128,7 +162,7 @@ void Room::setDoorCoordinates(bool doorUp, QPointF pos1, QPointF pos2) {
         _floor[_floor.count() - 1]->setPos(pos2);
         _door->setPos(pos2);
     }
-    beginDoorPos = _door->pos();
+    _beginDoorPos = _door->pos();
 }
 
 void Room::addAllItems() {

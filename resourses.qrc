@@ -10,6 +10,8 @@
         <file>resourses/images/door.jpg</file>
         <file>resourses/images/dota.png</file>
         <file>resourses/images/hookah.png</file>
+        <file>resourses/images/ps4.png</file>
+        <file>resourses/images/Hammer.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resourses/styles/styles.css</file>

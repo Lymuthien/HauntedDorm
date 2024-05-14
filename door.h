@@ -12,9 +12,7 @@ public:
     int getMaxHp();
     int getHp();
     void setHp(int hp);
-
-private slots:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void clicked();
 
 private:
     int _maxHp = 512;

@@ -3,17 +3,12 @@
 
 #include "cage.h"
 #include "addbuildingform.h"
+#include "upgrateform.h"
 
 class FloorCage : public Cage
 {
 public:
     explicit FloorCage(QPixmap pixmap, QObject *parent = nullptr);
-
-    enum BuildingType {
-        Hookah,
-        Turret,
-        Bottle
-    };
 
     void setBuilding(BuildingType type);
     void deleteBuilding();
@@ -27,7 +22,8 @@ public:
     void clicked();
 
 private:
-    AddBuildingForm* _form;
+    AddBuildingForm* _form = nullptr;
+    UpgrateForm* _upgradeForm = nullptr;
     QPixmap _emptyPixmap;
     bool _free = true;
     bool _visible = false;

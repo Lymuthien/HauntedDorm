@@ -45,6 +45,13 @@ QPushButton:pressed {
     background: rgb(183, 130, 174);
 }
 
+QTimeEdit {
+	font: 30px;
+	color: rgb(39, 38, 38);
+	background: rgba(210, 53, 67, 0.5);
+	border: 1px red;
+	border-radius: 15px;
+}
 </string>
   </property>
   <widget class="QGraphicsView" name="graphicsView">
@@ -97,6 +104,41 @@ QPushButton:pressed {
      <width>40</width>
      <height>40</height>
     </size>
+   </property>
+  </widget>
+  <widget class="QTimeEdit" name="timeBeforeGhost">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>10</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="wrapping">
+    <bool>false</bool>
+   </property>
+   <property name="frame">
+    <bool>false</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::NoButtons</enum>
+   </property>
+   <property name="displayFormat">
+    <string>ss</string>
+   </property>
+   <property name="time">
+    <time>
+     <hour>0</hour>
+     <minute>0</minute>
+     <second>20</second>
+    </time>
    </property>
   </widget>
  </widget>

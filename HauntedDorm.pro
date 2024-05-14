@@ -17,6 +17,7 @@ SOURCES += \
     cage.cpp \
     door.cpp \
     floorcage.cpp \
+    ghost.cpp \
     haunteddormgame.cpp \
     human.cpp \
     main.cpp \
@@ -24,7 +25,8 @@ SOURCES += \
     map.cpp \
     menu.cpp \
     room.cpp \
-    settings.cpp
+    settings.cpp \
+    upgrateform.cpp
 
 HEADERS += \
     addbuildingform.h \
@@ -32,20 +34,23 @@ HEADERS += \
     cage.h \
     door.h \
     floorcage.h \
+    ghost.h \
     haunteddormgame.h \
     human.h \
     mainwindow.h \
     map.h \
     menu.h \
     room.h \
-    settings.h
+    settings.h \
+    upgrateform.h
 
 FORMS += \
     addbuildingform.ui \
     mainwindow.ui \
     map.ui \
     menu.ui \
-    settings.ui
+    settings.ui \
+    upgrateform.ui
 
 TRANSLATIONS += \
     HauntedDorm_en_US.ts

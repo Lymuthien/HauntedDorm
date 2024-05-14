@@ -17,4 +17,10 @@ QRectF Cage::boundingRect() const
 
 void Cage::upgrade() {}
 
+Cage::BuildingType Cage::getType() {
+    return _type;
+}
 
+void Cage::setType(BuildingType type) {
+    _type = type;
+}

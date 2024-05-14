@@ -10,7 +10,7 @@
 #include <QCoreApplication>
 
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, _window(new MainWindow), SettingsForm(new Settings(_settings)), menu(new Menu), map(new Map)
+    : QObject{parent}, _window(new MainWindow), SettingsForm(new Settings(_settings)), menu(new Menu)
 {
     _music.setMedia(QUrl::fromUserInput("qrc:/music/resourses/music/bg-music.mp3"));
     _music.setVolume(20);
@@ -71,6 +71,8 @@ void HauntedDormGame::gameLoop()
 void HauntedDormGame::startGame()
 {
     _state = Playing;
+    if (map == nullptr)
+        map = new Map();
     _window->setCentralWidget(map);
 }
 

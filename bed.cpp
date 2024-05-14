@@ -2,7 +2,9 @@
 
 Bed::Bed(QPixmap pixmap, QObject *parent)
     : Cage(pixmap)
-{}
+{
+    setType(BedType);
+}
 
 void Bed::upgrade()
 {
@@ -22,10 +24,9 @@ void Bed::takeTheBed(QPixmap pixmap)
     this->update();
 }
 
-void Bed::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Bed::clicked()
 {
     //вызов меню улучшения
-    QGraphicsItem::mousePressEvent(event);
 }
 
 int Bed::getMoneyPerSec()

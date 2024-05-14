@@ -6,6 +6,7 @@
 #include "bed.h"
 #include "door.h"
 #include "floorcage.h"
+#include "human.h"
 
 #include <QVector>
 #include <QGraphicsItem>
@@ -16,9 +17,11 @@ class Room : public QObject, public QGraphicsItemGroup
     Q_OBJECT
 public:
     explicit Room(bool doorUp, QObject *parent = nullptr);
+    ~Room();
 
     void setFree(bool status);
     bool isFree();
+    void setHuman(Human* human);
     Door* getDoor();
     Bed* getBed();
     QPushButton* getSleepBtn();
@@ -48,13 +51,14 @@ private:
     QVector<Cage*> _walls;
     Bed* _bed;
     Door* _door;
-    QTimer* openDoorTimer;
-    QTimer* closeDoorTimer;
+    QTimer* _openDoorTimer;
+    QTimer* _closeDoorTimer;
     int _wallCount = 0;
     bool _free = true;
-    QPointF beginDoorPos;
-    QPushButton* sleepBtn;
+    QPointF _beginDoorPos;
+    QPushButton* _sleepBtn;
     QVector<QPushButton*> _interactBtns;
+    Human* _human;
 };
 
 #endif // ROOM_H

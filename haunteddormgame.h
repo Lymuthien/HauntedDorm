@@ -51,7 +51,7 @@ private:
 
     Settings* SettingsForm;
     Menu* menu;
-    Map* map;
+    Map* map = nullptr;
 
 signals:
 };

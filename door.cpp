@@ -2,12 +2,13 @@
 
 Door::Door(QPixmap pixmap, QObject *parent)
     : Cage{pixmap}
-{}
+{
+    setType(DoorType);
+}
 
 void Door::upgrade()
 {
-    /* maxHp =
-    */
+    _maxHp *= 2;
     _hp = _maxHp;
 }
 
@@ -17,11 +18,9 @@ void Door::changePixmap(QPixmap pixmap)
     this->update();
 }
 
-
-void Door::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Door::clicked()
 {
     //вызов меню улучшения
-    QGraphicsItem::mousePressEvent(event);
 }
 
 int Door::getMaxHp()

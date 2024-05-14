@@ -14,9 +14,7 @@ public:
     void takeTheBed(QPixmap pixmap);
     bool isFree();
     int getMoneyPerSec();
-
-private slots:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void clicked();
 
 private:
     bool _free = true;

@@ -77,6 +77,8 @@ QPushButton:pressed {
 }
 
 QLabel {
+	background: rgba(151, 162, 165, 0.5);
+	border: 2px solid rgb(70, 105, 115);
     font-family: system-ui;
     font: 20px;
     border: 2px solid black;
@@ -219,6 +221,12 @@ QCheckBox {
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label">
+      <property name="minimumSize">
+       <size>
+        <width>262</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="text">
        <string>Язык</string>
       </property>
@@ -226,6 +234,12 @@ QCheckBox {
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_3">
+      <property name="minimumSize">
+       <size>
+        <width>262</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="text">
        <string>Звуки</string>
       </property>
@@ -245,6 +259,18 @@ QCheckBox {
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>262</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>96</width>
+        <height>16777215</height>
+       </size>
       </property>
       <property name="text">
        <string>Музыка</string>

@@ -55,8 +55,6 @@ FORMS += \
     settings.ui \
     upgrateform.ui
 
-TRANSLATIONS += \
-    HauntedDorm_en_US.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 

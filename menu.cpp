@@ -6,10 +6,7 @@
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-Menu::Menu(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Menu)
-{
+Menu::Menu(QWidget *parent) : QWidget(parent), ui(new Ui::Menu) {
     ui->setupUi(this);
 
     QPalette palette = this->palette();
@@ -24,18 +21,15 @@ Menu::Menu(QWidget *parent)
     connect(ui->startBtn, &QPushButton::clicked, this, &Menu::btnClicked);
 }
 
-void Menu::SetCoinsLbl(QString str)
-{
+void Menu::SetCoinsLbl(QString str) {
     ui->label->setText(str);
 }
 
-Menu::~Menu()
-{
+Menu::~Menu() {
     delete ui;
 }
 
-void Menu::on_infoBtn_clicked()
-{
+void Menu::on_infoBtn_clicked() {
     emit btnClicked();
     QMessageBox::information(nullptr, "Информация об игре", "   Вы попадаете в общежитие, заполненное призраками. Ваша задача - выжить. Развивайтесь, прокачивайте оружие и здания, делайте все, чтобы убить призрака.\n"
                                                             "   В начале игры найдите свободную комнату и лягте спать. Как только это произошло, на ваш временный баланс начисляются монеты, доход зависит от уровня кровати.\n"

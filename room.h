@@ -51,6 +51,7 @@ private:
     QVector<Cage*> _walls;
     Bed* _bed;
     Door* _door;
+    Human* _human;
     QTimer* _openDoorTimer;
     QTimer* _closeDoorTimer;
     int _wallCount = 0;
@@ -58,7 +59,6 @@ private:
     QPointF _beginDoorPos;
     QPushButton* _sleepBtn;
     QVector<QPushButton*> _interactBtns;
-    Human* _human;
 };
 
 #endif // ROOM_H

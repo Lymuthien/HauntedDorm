@@ -2,7 +2,7 @@
 #define BED_H
 
 #include "cage.h"
-#include "addbuildingform.h"
+#include "upgrateform.h"
 
 class Bed : public Cage
 {
@@ -12,13 +12,12 @@ public:
 
     void upgrade();
     void takeTheBed(QPixmap pixmap);
-    bool isFree();
     int getMoneyPerSec();
     void clicked();
 
 private:
-    bool _free = true;
     int _moneyPerSec = 2;
+    UpgrateForm* _form = nullptr;
 };
 
 #endif // BED_H

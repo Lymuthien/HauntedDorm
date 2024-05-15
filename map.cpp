@@ -25,7 +25,7 @@ Map::Map(QWidget *parent)
     connect(humanAndDoorTimer, &QTimer::timeout, this, &Map::openDoorInRoom);
     humanAndDoorTimer->start();
 
-    ghostAndDoorTimer->setInterval(2000);
+    ghostAndDoorTimer->setInterval(1000);
     connect(ghostAndDoorTimer, &QTimer::timeout, this, &Map::hitDoorInRoom);
 
     _human->setPos(57*15, 57*9);

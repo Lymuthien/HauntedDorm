@@ -16,7 +16,7 @@ public:
         DoorType,
         BedType,
         HookahType,
-        TurretType,
+        ShellyType,
         Ps4Type,
         DotaType
     };
@@ -25,6 +25,8 @@ public:
     virtual void upgrade();
     BuildingType getType();
     void setType(BuildingType type);
+    QString getTypeString();
+    QPixmap getPixmap();
 
 protected:
     QPixmap _pixmap;

@@ -14,6 +14,7 @@
         <file>resourses/images/Hammer.png</file>
         <file>resourses/images/ghost.png</file>
         <file>resourses/images/6-bybe.png</file>
+        <file>resourses/images/shelly.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resourses/styles/styles.css</file>

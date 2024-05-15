@@ -10,7 +10,8 @@ UpgrateForm::UpgrateForm(Cage* cage, QWidget *parent)
     setWindowTitle("");
     setWindowFlags((this->windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);
 
-
+    ui->buildingName->setText(_cage->getTypeString());
+    ui->buildingImage->setPixmap(_cage->getPixmap());
 }
 
 UpgrateForm::~UpgrateForm()

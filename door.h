@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "cage.h"
+#include "upgrateform.h"
 
 class Door : public Cage
 {
@@ -22,7 +23,8 @@ signals:
 
 private:
     int _maxHp = 512;
-    int _hp = 2;
+    int _hp = 512;
+    UpgrateForm* _form = nullptr;
 };
 
 #endif // DOOR_H

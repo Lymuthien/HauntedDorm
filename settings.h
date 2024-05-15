@@ -31,7 +31,6 @@ private slots:
 private:
     Ui::Settings *ui;
     bool* _settings;
-
     void setIcons();
 };
 

@@ -8,8 +8,7 @@
 #define WINDOW_HEIGHT 512
 
 Settings::Settings(bool* settings, QWidget *parent)
-    : QWidget(parent), ui(new Ui::Settings)
-    , _settings(settings)
+    : QWidget(parent), ui(new Ui::Settings), _settings(settings)
 {
     ui->setupUi(this);
     setFixedSize(this->size());
@@ -35,11 +34,6 @@ void Settings::setIcons()
         ui->soundModeButton->setIcon(QIcon::fromTheme("audio-volume-muted"));
 
     if (_settings[2])
-        ui->LanguageModeButton->setCurrentIndex(0);
-    else
-        ui->LanguageModeButton->setCurrentIndex(1);
-
-    if (_settings[3])
         ui->screenModeButton->setChecked(true);
     else
         ui->screenModeButton->setChecked(false);
@@ -71,26 +65,13 @@ void Settings::on_soundModeButton_clicked()
     setIcons();
 }
 
-
-void Settings::on_LanguageModeButton_currentIndexChanged(int index)
+void Settings::on_screenModeButton_stateChanged(int arg1)
 {
     if (_settings[2]) {
         _settings[2] = 0;
-        emit enLanguageSet();
-    } else {
-        _settings[2] = 1;
-        emit ruLanguageSet();
-    }
-}
-
-
-void Settings::on_screenModeButton_stateChanged(int arg1)
-{
-    if (_settings[3]) {
-        _settings[3] = 0;
         emit normalScreenSet();
     } else {
-        _settings[3] = 1;
+        _settings[2] = 1;
         emit fullScreenSet();
     }
 }

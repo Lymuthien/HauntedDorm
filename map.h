@@ -26,6 +26,8 @@ signals:
     void settingsBtnClicked();
     void btnClicked();
 
+    void gameOver(bool victory);
+
 private slots:
     void keyPressEvent(QKeyEvent* event);
     void on_timeBeforeGhost_timeChanged(const QTime &time);
@@ -36,9 +38,11 @@ private:
     void buildWalls();
     void buildRooms();
     void openDoorInRoom();
+    void hitDoorInRoom();
     void initHumanBots();
     void initGhost();
     void moveGhostHp();
+    void removeRoom(Room *room);
 
     Ui::Map *ui;
     
@@ -46,6 +50,7 @@ private:
     const int WALL_COUNT_HEIGHT = 19;
 
     QTimer* humanAndDoorTimer;
+    QTimer* ghostAndDoorTimer;
     QVector<Cage*> _walls;
     QGraphicsScene* _scene;
     QVector<Room*> _rooms;

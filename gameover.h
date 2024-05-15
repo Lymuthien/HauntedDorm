@@ -12,8 +12,11 @@ class GameOver : public QWidget
     Q_OBJECT
 
 public:
-    explicit GameOver(QWidget *parent = nullptr);
+    explicit GameOver(bool victory, QWidget *parent = nullptr);
     ~GameOver();
+
+signals:
+    void goToMenu();
 
 private:
     Ui::GameOver *ui;

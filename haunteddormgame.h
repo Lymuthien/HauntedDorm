@@ -7,6 +7,7 @@
 #include <QOpenGLWidget>
 #include <QObject>
 
+#include "gameover.h"
 #include "mainwindow.h"
 #include "settings.h"
 #include "menu.h"
@@ -35,7 +36,9 @@ private:
     void playSound(int number);
 
     void startGame();
+    void endGame();
     void showSettings();
+    void setGameOver(bool victory);
 
     bool* getSettings();
     void setSettings(int number, bool value);
@@ -49,11 +52,12 @@ private:
     int _coins = 0;
 
     QSoundEffect _sound[3];
-    bool _settings[4] = {1, 1, 1, 0};
+    bool _settings[4] = {1, 1, 0};
 
     Settings* SettingsForm = nullptr;
     Menu* menu;
     Map* map = nullptr;
+    GameOver* gameOver = nullptr;
 
 signals:
 };

@@ -38,7 +38,7 @@ void HauntedDormGame::readCache() {
     if (!cache.open(QIODevice::ReadOnly | QIODevice::Text)) return;
     QTextStream in(&cache);
     QStringList settingsCache = in.readLine().split(" ");
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 3; ++i)
         _settings[i] = settingsCache[i].toInt();
     _coins = in.readLine().toInt();
 }
@@ -77,8 +77,25 @@ void HauntedDormGame::startGame()
         map = new Map();
         connect(map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
         connect(map, &Map::btnClicked, this, [=]() {playSound(0);});
+        connect(map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
     }
     _window->setCentralWidget(map);
+}
+
+void HauntedDormGame::endGame()
+{
+    //delete map;
+
+    //_window->setCentralWidget(menu);
+}
+
+void HauntedDormGame::setGameOver(bool victory) {
+    if (gameOver == nullptr) {
+        gameOver = new GameOver(victory);
+        connect(gameOver, &GameOver::goToMenu, this, &HauntedDormGame::endGame);
+    }
+    gameOver->show();
+    if (victory) _coins += 500;
 }
 
 void HauntedDormGame::setState(State s)

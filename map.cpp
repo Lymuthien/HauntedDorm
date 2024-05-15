@@ -1,4 +1,5 @@
 #include "map.h"
+#include "qdebug.h"
 #include "ui_map.h"
 
 #include <QGraphicsProxyWidget>
@@ -6,8 +7,8 @@
 #include <QTimer>
 
 Map::Map(QWidget *parent)
-    : QWidget(parent), ui(new Ui::Map), humanAndDoorTimer(new QTimer(this)), _scene(new QGraphicsScene)
-    , _human (new Human(QPixmap(":/images/resourses/images/pngwing.com.png")))
+    : QWidget(parent), ui(new Ui::Map), humanAndDoorTimer(new QTimer(this)), ghostAndDoorTimer(new QTimer(this))
+    , _scene(new QGraphicsScene), _human (new Human(QPixmap(":/images/resourses/images/pngwing.com.png")))
 {
     ui->setupUi(this);
     ui->graphicsView->setScene(_scene);
@@ -24,6 +25,9 @@ Map::Map(QWidget *parent)
     connect(humanAndDoorTimer, &QTimer::timeout, this, &Map::openDoorInRoom);
     humanAndDoorTimer->start();
 
+    ghostAndDoorTimer->setInterval(2000);
+    connect(ghostAndDoorTimer, &QTimer::timeout, this, &Map::hitDoorInRoom);
+
     _human->setPos(57*15, 57*9);
     _scene->addItem(_human);
 
@@ -35,27 +39,27 @@ Map::Map(QWidget *parent)
     ui->gameTime->hide();
     ui->doorHp->hide();
     ui->ghostHp->hide();
-    initGhost();
+    //initGhost();
 }
 
 void Map::buildWalls() {
     for (int i = 0; i < (WALL_COUNT_WIDTH + WALL_COUNT_HEIGHT) * 2 ; ++i)
         _walls.append(new Cage(QPixmap(":/images/resourses/images/wall.jpg")));
 
-    for (int i = 0, j = 0; i < WALL_COUNT_WIDTH; ++i) {
-        if (i == WALL_COUNT_WIDTH / 3 || i == WALL_COUNT_WIDTH * 2 / 3) {
-            _ghostHillZone.append(QPoint(57*i, 0));
-            _ghostHillZone.append(QPoint(57*i, 1080-57));
-            continue;
-        }
-        _walls[j*2]->setPos(57 * i, 0);
-        _walls[j*2 + 1]->setPos(57 * i, 1080-57);
-        ++j;
+    for (int i = 0; i < WALL_COUNT_WIDTH; ++i) {
+        _walls[i*2]->setPos(57 * i, 0);
+        _walls[i*2 + 1]->setPos(57 * i, 1080-57);
     }
 
-    for (int i = 0; i < WALL_COUNT_HEIGHT; ++i) {
-        _walls[WALL_COUNT_WIDTH * 2 + i * 2]->setPos(0, 57 * i);
-        _walls[WALL_COUNT_WIDTH * 2 + i * 2 + 1]->setPos(1920-57, 57 * i);
+    for (int i = 0, j = 0; i < WALL_COUNT_HEIGHT; ++i) {
+        if (i == WALL_COUNT_HEIGHT / 2) {
+            _ghostHillZone.append(QPoint(0, 57*i));
+            _ghostHillZone.append(QPoint(1920-57, 57*i));
+            continue;
+        }
+        _walls[WALL_COUNT_WIDTH * 2 + j * 2]->setPos(0, 57 * i);
+        _walls[WALL_COUNT_WIDTH * 2 + j * 2 + 1]->setPos(1920-57, 57 * i);
+        ++j;
     }
 
     for (int i = 0; i < (WALL_COUNT_WIDTH + WALL_COUNT_HEIGHT) * 2 ; ++i)
@@ -94,7 +98,15 @@ void Map::buildRooms() {
                 connect(_rooms[i*3+j]->getDoor(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(_rooms[i*3+j]->getDoor()->getHp());} );
                 //тут будет смена спрайта кровати
             });
+            Room* room = _rooms[i*3+j];
+            connect(room, &Room::destroyed, this, [=]() {removeRoom(room);});
         }
+}
+
+void Map::removeRoom(Room* room) {
+    int i = _rooms.indexOf(room);
+    _rooms[i] = nullptr;
+    _rooms.remove(i);
 }
 
 void Map::keyPressEvent(QKeyEvent* event)
@@ -122,13 +134,14 @@ void Map::keyPressEvent(QKeyEvent* event)
 
 Map::~Map()
 {
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < _rooms.count(); ++i)
         delete _rooms[i];
     delete ui;
 }
 
 void Map::openDoorInRoom() {
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < _rooms.count(); ++i) {
+        if (_rooms[i]->getDoor()==nullptr) continue;
         if (_rooms[i]->isFree()) {
             if (abs(_human->y() - (_rooms[i]->getDoor()->y()+_rooms[i]->y())) <= 57*2
                 && abs(_human->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57*2)
@@ -144,11 +157,20 @@ void Map::openDoorInRoom() {
     }
 }
 
+void Map::hitDoorInRoom() {
+    for (int i = 0; i < _rooms.count(); ++i) {
+        qDebug() << "roomN" << i << " pos: " << _rooms[i]->pos();
+        if (abs(_ghost->y() - (_rooms[i]->getDoor()->y()+_rooms[i]->y())) <= 57
+            && abs(_ghost->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57)
+            _rooms[i]->getDoor()->setHp(_rooms[i]->getDoor()->getHp() - _ghost->getDamage()); }
+}
+
 void Map::initGhost() {
-    _ghost = new Ghost(QPixmap(":/images/resourses/images/ghost.png"), _ghostHillZone, 50, 50);
+    _ghost = new Ghost(QPixmap(":/images/resourses/images/ghost.png"), &_rooms, _ghostHillZone, 50, 50);
     _scene->addItem(_ghost);
     _ghost->setPos(57*11, 57*9);
     connect(_ghost, &Ghost::moved, this, &Map::moveGhostHp);
+    ghostAndDoorTimer->start();
 }
 
 void Map::moveGhostHp() {
@@ -159,6 +181,7 @@ void Map::moveGhostHp() {
 void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
 {
     if (!time.second()) {
+        //if (!_human->isInRoom()) emit gameOver(false);
         initGhost();
         ui->gameTime->show();
         ui->timeBeforeGhost->hide();

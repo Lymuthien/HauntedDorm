@@ -22,7 +22,7 @@ signals:
 
 private:
     int _maxHp = 512;
-    int _hp = 512;
+    int _hp = 2;
 };
 
 #endif // DOOR_H

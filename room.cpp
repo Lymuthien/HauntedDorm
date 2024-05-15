@@ -5,7 +5,6 @@
 #include <QTimer>
 #include <QPushButton>
 #include <QStyle>
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
 Room::Room(bool doorUp, QObject* parent)
@@ -31,11 +30,10 @@ Room::Room(bool doorUp, QObject* parent)
         _interactFloor[i]->setVisible(false);
 
     addAllItems();
+    connect(_door, &Door::destroyed, this, [=]() {_door = nullptr; delete this;});
 }
 
 Room::~Room() {
-    delete _bed;
-    //delete _door;
     delete _openDoorTimer;
     delete _closeDoorTimer;
     delete _sleepBtn;
@@ -45,7 +43,12 @@ Room::~Room() {
         delete _walls[i];
     for (int i = 0; i < _interactBtns.count(); ++i)
         delete _interactBtns[i];
+    /*
+    delete _bed;
+    //delete _door;
 
+
+*/
     /*
     QVector<FloorCage*> _interactFloor;
     Human* _human;*/

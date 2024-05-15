@@ -37,4 +37,10 @@
     <qresource prefix="/textfiles">
         <file>cache</file>
     </qresource>
+    <qresource prefix="/skins">
+        <file>resourses/images/skins/tanya.png</file>
+        <file>resourses/images/skins/nikita.png</file>
+        <file>resourses/images/skins/katya.png</file>
+        <file>resourses/images/skins/german.png</file>
+    </qresource>
 </RCC>

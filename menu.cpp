@@ -6,7 +6,7 @@
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-Menu::Menu(QWidget *parent) : QWidget(parent), ui(new Ui::Menu) {
+Menu::Menu(QPixmap* skins, QWidget *parent) : QWidget(parent), ui(new Ui::Menu), skins(skins) {
     ui->setupUi(this);
 
     QPalette palette = this->palette();
@@ -39,4 +39,27 @@ void Menu::on_infoBtn_clicked() {
                                                             "или призрак сломал вашу дверь - игра окончена...");
 }
 
+void Menu::setSkin(QPixmap skin) {
+    ui->skinImg->setPixmap(skin);
+}
+
+QPixmap Menu::getSkin() {
+    return ui->skinImg->pixmap(Qt::ReturnByValueConstant());
+}
+
+void Menu::on_skin1Btn_clicked() {
+    ui->skinImg->setPixmap(skins[0]);
+}
+
+void Menu::on_skin2Btn_clicked() {
+    ui->skinImg->setPixmap(skins[1]);
+}
+
+void Menu::on_skin3Btn_clicked() {
+    ui->skinImg->setPixmap(skins[2]);
+}
+
+void Menu::on_skin4Btn_clicked() {
+    ui->skinImg->setPixmap(skins[3]);
+}
 

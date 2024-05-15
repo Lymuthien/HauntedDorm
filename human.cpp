@@ -22,6 +22,10 @@ void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     painter->drawPixmap(QRect(0, 0, _pixmapWidth, _pixmapHeight), _pixmap);
 }
 
+QPixmap Human::getPixmap() {
+    return _pixmap;
+}
+
 QRectF Human::boundingRect() const
 {
     return QRectF(0, 0, _pixmapWidth, _pixmapHeight);

@@ -99,6 +99,11 @@ void Room::showInteractingCages() {
 
 void Room::setHuman(Human* human) {
     _human = human;
+    _human->setPos(x()+_bed->x(), y()+_bed->y());
+    QGraphicsPixmapItem* h = new QGraphicsPixmapItem(_human->getPixmap().scaled(50, 50));
+    h->setPos(_bed->pos() + this->pos() + QPointF(3.5, 3.5));
+    addToGroup(h);
+    _human->setPos(-57, -57);
     _human->setInRoom();
     setFree(false);
 }

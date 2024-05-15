@@ -20,18 +20,8 @@ public:
     explicit HauntedDormGame(QObject *parent = nullptr);
     void Start();
 
-    enum State {
-        Uninitialized,
-        SplashScreen,
-        MenuState,
-        Playing,
-        Exiting
-    };
-
 private:
     void gameLoop();
-    void setState (State s);
-    State getState();
     void playMusic(bool value);
     void playSound(int number);
 
@@ -46,8 +36,6 @@ private:
     void readCache();
 
     MainWindow* _window;
-    State _state = Uninitialized;
-    QMap<State, int> _stateInstances;
     QMediaPlayer _music;
     int _coins = 0;
 
@@ -58,6 +46,10 @@ private:
     Menu* menu;
     Map* map = nullptr;
     GameOver* gameOver = nullptr;
+    QPixmap skins[4] {QPixmap(":/skins/resourses/images/skins/german.png"),
+                           QPixmap(":/skins/resourses/images/skins/katya.png"),
+                           QPixmap(":/skins/resourses/images/skins/tanya.png"),
+                           QPixmap(":/skins/resourses/images/skins/nikita.png")};
 
 signals:
 };

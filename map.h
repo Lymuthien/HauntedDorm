@@ -19,12 +19,13 @@ class Map : public QWidget
     Q_OBJECT
 
 public:
-    explicit Map(QWidget *parent = nullptr);
+    explicit Map(QPixmap skin, QPixmap *skins, QWidget *parent = nullptr);
     ~Map();
 
 signals:
     void settingsBtnClicked();
     void btnClicked();
+    void doorHitted();
 
     void gameOver(bool victory);
 
@@ -58,6 +59,7 @@ private:
     QVector<Human*> _humanBots;
     Ghost* _ghost;
     QVector<QPoint> _ghostHillZone;
+    QPixmap* skins;
 };
 
 #endif // MAP_H

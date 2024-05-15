@@ -11,7 +11,7 @@
 #include <QFile>
 
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, _window(new MainWindow), menu(new Menu)
+    : QObject{parent}, _window(new MainWindow), menu(new Menu(skins))
 {
     readCache();
 
@@ -41,43 +41,26 @@ void HauntedDormGame::readCache() {
     for (int i = 0; i < 3; ++i)
         _settings[i] = settingsCache[i].toInt();
     _coins = in.readLine().toInt();
+    int skinNum = in.readLine().toInt();
+    menu->setSkin(skins[skinNum]);
 }
 
 void HauntedDormGame::Start()
 {
-    if (_state != Uninitialized) return;
-
-    _stateInstances[Playing];
-    _stateInstances[SplashScreen];
-    _stateInstances[MenuState];
-
-    _state = MenuState;
     _music.play();
-
-    //gameLoop();
 
     _window->setCentralWidget(menu);
     _window->show();
 }
 
-
-void HauntedDormGame::gameLoop()
-{
-    while (_state != Exiting)
-    {
-
-    }
-
-}
-
 void HauntedDormGame::startGame()
 {
-    _state = Playing;
     if (map == nullptr) {
-        map = new Map();
+        map = new Map(menu->getSkin(), skins);
         connect(map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
         connect(map, &Map::btnClicked, this, [=]() {playSound(0);});
         connect(map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
+        connect(map, &Map::doorHitted, this, [=]() {playSound(1);});
     }
     _window->setCentralWidget(map);
 }
@@ -96,16 +79,6 @@ void HauntedDormGame::setGameOver(bool victory) {
     }
     gameOver->show();
     if (victory) _coins += 500;
-}
-
-void HauntedDormGame::setState(State s)
-{
-    _state = s;
-}
-
-HauntedDormGame::State HauntedDormGame::getState()
-{
-    return _state;
 }
 
 void HauntedDormGame::playMusic(bool value)

@@ -1,21 +1,21 @@
 #include "map.h"
-#include "qdebug.h"
 #include "ui_map.h"
 
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
 #include <QTimer>
 
-Map::Map(QWidget *parent)
+Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     : QWidget(parent), ui(new Ui::Map), humanAndDoorTimer(new QTimer(this)), ghostAndDoorTimer(new QTimer(this))
-    , _scene(new QGraphicsScene), _human (new Human(QPixmap(":/images/resourses/images/pngwing.com.png")))
-{
+    , _scene(new QGraphicsScene), skins(skins)
+{    
     ui->setupUi(this);
     ui->graphicsView->setScene(_scene);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+
+    _human = new Human(skin);
 
     buildWalls();
     buildRooms();
@@ -39,7 +39,6 @@ Map::Map(QWidget *parent)
     ui->gameTime->hide();
     ui->doorHp->hide();
     ui->ghostHp->hide();
-    //initGhost();
 }
 
 void Map::buildWalls() {
@@ -68,7 +67,8 @@ void Map::buildWalls() {
 
 void Map::initHumanBots() {
     for(int i = 0; i < 3; ++i) {
-        _humanBots.append(new Human(QPixmap(":/images/resourses/images/pngwing.com.png")));
+        int skin = QRandomGenerator::global()->bounded(4);
+        _humanBots.append(new Human(skins[skin]));
         _humanBots[i]->setPos(57*15, 57*9);
         _scene->addItem(_humanBots[i]);
         int roomNum = QRandomGenerator::global()->bounded(0, 2) + i * 2;
@@ -159,10 +159,12 @@ void Map::openDoorInRoom() {
 
 void Map::hitDoorInRoom() {
     for (int i = 0; i < _rooms.count(); ++i) {
-        qDebug() << "roomN" << i << " pos: " << _rooms[i]->pos();
         if (abs(_ghost->y() - (_rooms[i]->getDoor()->y()+_rooms[i]->y())) <= 57
-            && abs(_ghost->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57)
-            _rooms[i]->getDoor()->setHp(_rooms[i]->getDoor()->getHp() - _ghost->getDamage()); }
+            && abs(_ghost->x() - (_rooms[i]->getDoor()->x()+_rooms[i]->x())) <= 57) {
+            _rooms[i]->getDoor()->setHp(_rooms[i]->getDoor()->getHp() - _ghost->getDamage());
+            emit doorHitted();
+        }
+    }
 }
 
 void Map::initGhost() {

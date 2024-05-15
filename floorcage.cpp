@@ -1,59 +1,60 @@
 #include "floorcage.h"
 
-FloorCage::FloorCage(QPixmap pixmap, QObject *parent)
-    : Cage{pixmap}, _form(new AddBuildingForm), _emptyPixmap(pixmap)
-{}
+FloorCage::FloorCage(QPixmap pixmap, QObject *parent) : Cage{pixmap}, _emptyPixmap(pixmap) {
+    setType(UninitializedType);
+}
 
-void FloorCage::setBuilding(BuildingType type)
-{
+void FloorCage::setBuilding(BuildingType type) {
     switch (type) {
-    case Hookah:
+    case HookahType:
         //_pixmap =
         //_cost +=
         break;
-    case Turret:
+    case ShellyType:
         //_pixmap =
         //_cost +=
         break;
-    case Bottle:
-        //_pixmap =
-        //_cost +=
+    case Cage::UninitializedType:
+    case Cage::DoorType:
+    case Cage::BedType:
+    case Cage::Ps4Type:
+    case Cage::DotaType:
         break;
     }
+
     this->update();
     _free = false;
     _visible = true;
 }
 
-
-void FloorCage::deleteBuilding()
-{
+void FloorCage::deleteBuilding() {
     _moneyPerSec = 0;
     _energyPerSec = 0;
     _cost = 0;
     _pixmap = _emptyPixmap;
+    setType(UninitializedType);
     _free = true;
 }
 
-
-void FloorCage::clicked()
-{
-    if (_free) //вызов меню постройки
-    {
+void FloorCage::clicked() {
+    if (_free) {
+        if (_form == nullptr)
+            _form = new AddBuildingForm(this);
         _form->show();
     }
-    else
-        //вызов меню улучшения
-        _form->show();
+    else {
+        if (_upgradeForm == nullptr)
+            _upgradeForm = new UpgrateForm(this);
+        _upgradeForm->show();
+    }
+
 }
 
-bool FloorCage::isVisible()
-{
+bool FloorCage::isVisible() {
     return _visible;
 }
 
-void FloorCage::setVisible(bool visible)
-{
+void FloorCage::setVisible(bool visible) {
     if (visible)
         show();
     else
@@ -61,27 +62,31 @@ void FloorCage::setVisible(bool visible)
     _visible = visible;
 }
 
-bool FloorCage::isFree()
-{
+bool FloorCage::isFree() {
     return _free;
 }
 
 void FloorCage::upgrade()
 {
-
+    int buffCost = _cost;
+    if (_moneyPerSec) {
+        _moneyPerSec *= 2;
+        _cost += buffCost;
+    }
+    if (_energyPerSec) {
+        _energyPerSec *= 0;
+        _cost += buffCost;
+    }
 }
 
-int FloorCage::getMoneyPerSec()
-{
+int FloorCage::getMoneyPerSec() {
     return _moneyPerSec;
 }
 
-int FloorCage::getEnergyPerSec()
-{
+int FloorCage::getEnergyPerSec() {
     return _energyPerSec;
 }
 
-int FloorCage::getCost()
-{
+int FloorCage::getCost() {
     return _cost;
 }

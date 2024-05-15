@@ -20,21 +20,17 @@ signals:
     void musicOff();
     void soundOn();
     void soundOff();
-    void ruLanguageSet();
-    void enLanguageSet();
     void fullScreenSet();
     void normalScreenSet();
 
 private slots:
     void on_musicModeButton_clicked();
     void on_soundModeButton_clicked();
-    void on_LanguageModeButton_currentIndexChanged(int index);
     void on_screenModeButton_stateChanged(int arg1);
 
 private:
     Ui::Settings *ui;
     bool* _settings;
-
     void setIcons();
 };
 

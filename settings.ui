@@ -77,6 +77,8 @@ QPushButton:pressed {
 }
 
 QLabel {
+	background: rgba(151, 162, 165, 0.5);
+	border: 2px solid rgb(70, 105, 115);
     font-family: system-ui;
     font: 20px;
     border: 2px solid black;
@@ -160,84 +162,6 @@ QCheckBox {
     <property name="rightMargin">
      <number>1</number>
     </property>
-    <item row="2" column="1">
-     <widget class="QComboBox" name="LanguageModeButton">
-      <property name="minimumSize">
-       <size>
-        <width>131</width>
-        <height>25</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>125</width>
-        <height>25</height>
-       </size>
-      </property>
-      <item>
-       <property name="text">
-        <string>Русский</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Английский</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QCheckBox" name="screenModeButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="tristate">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Язык</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Звуки</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Полноэкранный режим</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="sizePolicy">
@@ -245,6 +169,18 @@ QCheckBox {
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>262</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>96</width>
+        <height>16777215</height>
+       </size>
       </property>
       <property name="text">
        <string>Музыка</string>
@@ -273,6 +209,19 @@ QCheckBox {
       </property>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="minimumSize">
+       <size>
+        <width>262</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Звуки</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="1">
      <widget class="QPushButton" name="soundModeButton">
       <property name="sizePolicy">
@@ -286,6 +235,44 @@ QCheckBox {
       </property>
       <property name="icon">
        <iconset theme="audio-volume-high"/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Полноэкранный режим</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QCheckBox" name="screenModeButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
       </property>
      </widget>
     </item>

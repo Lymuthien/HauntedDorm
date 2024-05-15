@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 
+#include "ghost.h"
 #include "room.h"
 #include "human.h"
 
@@ -18,32 +19,47 @@ class Map : public QWidget
     Q_OBJECT
 
 public:
-    explicit Map(QWidget *parent = nullptr);
+    explicit Map(QPixmap skin, QPixmap *skins, QWidget *parent = nullptr);
     ~Map();
 
 signals:
     void settingsBtnClicked();
     void btnClicked();
+    void doorHitted();
+
+    void gameOver(bool victory);
 
 private slots:
     void keyPressEvent(QKeyEvent* event);
+    void on_timeBeforeGhost_timeChanged(const QTime &time);
+
+    void on_gameTime_timeChanged(const QTime &time);
 
 private:
     void buildWalls();
     void buildRooms();
     void openDoorInRoom();
+    void hitDoorInRoom();
+    void initHumanBots();
+    void initGhost();
+    void moveGhostHp();
+    void removeRoom(Room *room);
 
     Ui::Map *ui;
     
     const int WALL_COUNT_WIDTH = 33;
     const int WALL_COUNT_HEIGHT = 19;
 
-    int humanRoom = 0;
     QTimer* humanAndDoorTimer;
+    QTimer* ghostAndDoorTimer;
     QVector<Cage*> _walls;
     QGraphicsScene* _scene;
     QVector<Room*> _rooms;
     Human* _human;
+    QVector<Human*> _humanBots;
+    Ghost* _ghost;
+    QVector<QPoint> _ghostHillZone;
+    QPixmap* skins;
 };
 
 #endif // MAP_H

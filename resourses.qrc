@@ -10,6 +10,11 @@
         <file>resourses/images/door.jpg</file>
         <file>resourses/images/dota.png</file>
         <file>resourses/images/hookah.png</file>
+        <file>resourses/images/ps4.png</file>
+        <file>resourses/images/Hammer.png</file>
+        <file>resourses/images/ghost.png</file>
+        <file>resourses/images/6-bybe.png</file>
+        <file>resourses/images/shelly.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resourses/styles/styles.css</file>
@@ -28,5 +33,14 @@
         <file>resourses/music/hitting-door-sound.wav</file>
         <file>resourses/music/button-in-menu-pressed.wav</file>
         <file>resourses/music/quite-pressing.wav</file>
+    </qresource>
+    <qresource prefix="/textfiles">
+        <file>cache</file>
+    </qresource>
+    <qresource prefix="/skins">
+        <file>resourses/images/skins/tanya.png</file>
+        <file>resourses/images/skins/nikita.png</file>
+        <file>resourses/images/skins/katya.png</file>
+        <file>resourses/images/skins/german.png</file>
     </qresource>
 </RCC>

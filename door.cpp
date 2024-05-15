@@ -1,40 +1,39 @@
 #include "door.h"
 
-Door::Door(QPixmap pixmap, QObject *parent)
-    : Cage{pixmap}
-{}
-
-void Door::upgrade()
-{
-    /* maxHp =
-    */
-    _hp = _maxHp;
+Door::Door(QPixmap pixmap, QObject *parent) : Cage{pixmap} {
+    setType(DoorType);
 }
 
-void Door::changePixmap(QPixmap pixmap)
-{
+void Door::upgrade() {
+    _maxHp *= 2;
+    _hp = _maxHp;
+    emit hpChanged();
+}
+
+void Door::changePixmap(QPixmap pixmap) {
     _pixmap = pixmap;
     this->update();
 }
 
-
-void Door::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    //вызов меню улучшения
-    QGraphicsItem::mousePressEvent(event);
+void Door::clicked() {
+    if (_form == nullptr)
+        _form = new UpgrateForm(this);
+    _form->show();
 }
 
-int Door::getMaxHp()
-{
+int Door::getMaxHp() {
     return _maxHp;
 }
 
-int Door::getHp()
-{
+int Door::getHp() {
     return _hp;
 }
 
-void Door::setHp(int hp)
-{
+void Door::setHp(int hp) {
     _hp = hp;
+    if (_hp <= 0) {
+        delete this;
+        return;
+    }
+    emit hpChanged();
 }

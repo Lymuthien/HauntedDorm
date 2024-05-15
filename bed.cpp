@@ -1,34 +1,24 @@
 #include "bed.h"
 
-Bed::Bed(QPixmap pixmap, QObject *parent)
-    : Cage(pixmap)
-{}
-
-void Bed::upgrade()
-{
-    /* окно улучшения ->show
-     * соблюдение условий прокачки во внешнем классе*/
+Bed::Bed(QPixmap pixmap, QObject *parent) : Cage(pixmap) {
+    setType(BedType);
 }
 
-bool Bed::isFree()
-{
-    return _free;
+void Bed::upgrade() {
+    _moneyPerSec *= 2;
 }
 
-void Bed::takeTheBed(QPixmap pixmap)
-{
+void Bed::takeTheBed(QPixmap pixmap) {
     _pixmap = pixmap;
-    _free = false;
     this->update();
 }
 
-void Bed::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    //вызов меню улучшения
-    QGraphicsItem::mousePressEvent(event);
+void Bed::clicked() {
+    if (_form == nullptr)
+        _form = new UpgrateForm(this);
+    _form->show();
 }
 
-int Bed::getMoneyPerSec()
-{
+int Bed::getMoneyPerSec() {
     return _moneyPerSec;
 }

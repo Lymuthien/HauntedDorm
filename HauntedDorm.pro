@@ -17,6 +17,8 @@ SOURCES += \
     cage.cpp \
     door.cpp \
     floorcage.cpp \
+    gameover.cpp \
+    ghost.cpp \
     haunteddormgame.cpp \
     human.cpp \
     main.cpp \
@@ -24,7 +26,8 @@ SOURCES += \
     map.cpp \
     menu.cpp \
     room.cpp \
-    settings.cpp
+    settings.cpp \
+    upgrateform.cpp
 
 HEADERS += \
     addbuildingform.h \
@@ -32,23 +35,26 @@ HEADERS += \
     cage.h \
     door.h \
     floorcage.h \
+    gameover.h \
+    ghost.h \
     haunteddormgame.h \
     human.h \
     mainwindow.h \
     map.h \
     menu.h \
     room.h \
-    settings.h
+    settings.h \
+    upgrateform.h
 
 FORMS += \
     addbuildingform.ui \
+    gameover.ui \
     mainwindow.ui \
     map.ui \
     menu.ui \
-    settings.ui
+    settings.ui \
+    upgrateform.ui
 
-TRANSLATIONS += \
-    HauntedDorm_en_US.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -58,7 +64,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    c \
+    cache \
     images/icon.png \
     setting-style.qss
 

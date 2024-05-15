@@ -8,25 +8,20 @@
 #include <QScreen>
 #include <QUrl>
 #include <QCoreApplication>
+#include <QFile>
 
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, _window(new MainWindow), SettingsForm(new Settings(_settings)), menu(new Menu), map(new Map)
+    : QObject{parent}, _window(new MainWindow), menu(new Menu(skins))
 {
+    readCache();
+
     _music.setMedia(QUrl::fromUserInput("qrc:/music/resourses/music/bg-music.mp3"));
     _music.setVolume(20);
-    QObject::connect(&_music, &QMediaPlayer::stateChanged, [&](QMediaPlayer::State state)
-                     {
-                         if (state == QMediaPlayer::StoppedState && _settings[0] == 1)
-                         {
+    QObject::connect(&_music, &QMediaPlayer::stateChanged, [&](QMediaPlayer::State state){
+                         if (state == QMediaPlayer::StoppedState && _settings[0] == 1) {
                              _music.setPosition(0);
                              _music.play();
-                         }
-                     });
-
-    connect(SettingsForm, &Settings::musicOn, this, [=]() {playMusic(1);});
-    connect(SettingsForm, &Settings::musicOff, this, [=]() {playMusic(0);});
-    connect(SettingsForm, &Settings::fullScreenSet, _window, [this]() {_window->setFullScreen(1); });
-    connect(SettingsForm, &Settings::normalScreenSet, _window, [this]() {_window->setFullScreen(0); });
+                         }});
 
     _sound[0].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/button-in-menu-pressed.wav"));
     _sound[1].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/hitting-door-sound.wav"));
@@ -36,52 +31,54 @@ HauntedDormGame::HauntedDormGame(QObject *parent)
     connect(menu, &Menu::settingsBtnClicked, this, &HauntedDormGame::showSettings);
     connect(menu, &Menu::startBtnClicked, this, &HauntedDormGame::startGame);
     connect(menu, &Menu::btnClicked, this, [=]() {playSound(0);});
+}
 
-    connect(map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
-    connect(map, &Map::btnClicked, this, [=]() {playSound(0);});
+void HauntedDormGame::readCache() {
+    QFile cache(":/textfiles/cache");
+    if (!cache.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    QTextStream in(&cache);
+    QStringList settingsCache = in.readLine().split(" ");
+    for (int i = 0; i < 3; ++i)
+        _settings[i] = settingsCache[i].toInt();
+    _coins = in.readLine().toInt();
+    int skinNum = in.readLine().toInt();
+    menu->setSkin(skins[skinNum]);
 }
 
 void HauntedDormGame::Start()
 {
-    if (_state != Uninitialized) return;
-
-    _stateInstances[Playing];
-    _stateInstances[SplashScreen];
-    _stateInstances[MenuState];
-
-    _state = MenuState;
     _music.play();
-
-    //gameLoop();
 
     _window->setCentralWidget(menu);
     _window->show();
 }
 
-
-void HauntedDormGame::gameLoop()
-{
-    while (_state != Exiting)
-    {
-
-    }
-
-}
-
 void HauntedDormGame::startGame()
 {
-    _state = Playing;
+    if (map == nullptr) {
+        map = new Map(menu->getSkin(), skins);
+        connect(map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
+        connect(map, &Map::btnClicked, this, [=]() {playSound(0);});
+        connect(map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
+        connect(map, &Map::doorHitted, this, [=]() {playSound(1);});
+    }
     _window->setCentralWidget(map);
 }
 
-void HauntedDormGame::setState(State s)
+void HauntedDormGame::endGame()
 {
-    _state = s;
+    //delete map;
+
+    //_window->setCentralWidget(menu);
 }
 
-HauntedDormGame::State HauntedDormGame::getState()
-{
-    return _state;
+void HauntedDormGame::setGameOver(bool victory) {
+    if (gameOver == nullptr) {
+        gameOver = new GameOver(victory);
+        connect(gameOver, &GameOver::goToMenu, this, &HauntedDormGame::endGame);
+    }
+    gameOver->show();
+    if (victory) _coins += 500;
 }
 
 void HauntedDormGame::playMusic(bool value)
@@ -110,6 +107,13 @@ void HauntedDormGame::setSettings(int number, bool value)
 
 void HauntedDormGame::showSettings()
 {
+    if (SettingsForm == nullptr) {
+        SettingsForm = new Settings(_settings);
+        connect(SettingsForm, &Settings::musicOn, this, [=]() {playMusic(1);});
+        connect(SettingsForm, &Settings::musicOff, this, [=]() {playMusic(0);});
+        connect(SettingsForm, &Settings::fullScreenSet, _window, [this]() {_window->setFullScreen(1); });
+        connect(SettingsForm, &Settings::normalScreenSet, _window, [this]() {_window->setFullScreen(0); });
+    }
     SettingsForm->hide();
     SettingsForm->show();
 }

@@ -17,4 +17,36 @@ QRectF Cage::boundingRect() const
 
 void Cage::upgrade() {}
 
+Cage::BuildingType Cage::getType() {
+    return _type;
+}
 
+QString Cage::getTypeString() {
+    switch(_type) {
+    case UninitializedType:
+        return "Uninitialized";
+    case DoorType:
+        return "Door";
+    case BedType:
+        return "Bed";
+    case HookahType:
+        return "Hookah";
+    case ShellyType:
+        return "Shelly";
+    case Ps4Type:
+        return "PS4";
+    case DotaType:
+        return "Dota";
+    default:
+        return "Unknown";
+    }
+}
+
+QPixmap Cage::getPixmap() {
+    return _pixmap;
+}
+
+
+void Cage::setType(BuildingType type) {
+    _type = type;
+}

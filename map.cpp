@@ -83,24 +83,29 @@ void Map::buildRooms() {
     for (int i = 0; i < 2; ++i)
         for (int j = 0; j < 3; ++j) {
             _rooms.append(new Room(i, this));
+            Room* room = _rooms[i*3+j];
             QPointF pos1(57 * (1 + QRandomGenerator::global()->bounded(0, 2)) + j * 11 * 57,
                          57 * (2 + 9 * i + QRandomGenerator::global()->bounded(0, 2)));
-            _rooms[i * 3 + j]->setPos(pos1);
-            _scene->addItem(_rooms[i * 3 + j]);
-            _rooms[i*3+j]->createSleepButton(this);
-            connect(_rooms[i*3+j], &Room::sleepBtnClicked, this, [=]() {
+            room->setPos(pos1);
+            _scene->addItem(room);
+            room->createSleepButton(this);
+            connect(room, &Room::sleepBtnClicked, this, [=]() {
                 _human->setPos(57*15, 57*9);
-                _rooms[i*3+j]->setHuman(_human);
-                ui->doorHp->setGeometry(_rooms[i*3+j]->getDoor()->x() + _rooms[i*3+j]->x() + 3,
-                                        _rooms[i*3+j]->getDoor()->y() + _rooms[i*3+j]->y() - 16, 51, 14);
-                ui->doorHp->setMaximum(_rooms[i*3+j]->getDoor()->getMaxHp());
+                room->setHuman(_human);
+                ui->doorHp->setGeometry(room->getDoor()->x() + room->x() + 3,
+                                        room->getDoor()->y() + room->y() - 16, 51, 14);
+                ui->doorHp->setMaximum(room->getDoor()->getMaxHp());
                 ui->doorHp->show();
-                connect(_rooms[i*3+j]->getDoor(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(_rooms[i*3+j]->getDoor()->getHp());} );
-                //тут будет смена спрайта кровати
+                connect(room, &Room::coinsChanged, this, &Map::setCoins);
+                connect(room->getDoor(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(room->getDoor()->getHp());} );
             });
-            Room* room = _rooms[i*3+j];
             connect(room, &Room::destroyed, this, [=]() {removeRoom(room);});
         }
+}
+
+void Map::setCoins(int money, int energy) {
+    ui->moneyCount->setText(QString::number(money));
+    ui->energyCount->setText(QString::number(energy));
 }
 
 void Map::removeRoom(Room* room) {

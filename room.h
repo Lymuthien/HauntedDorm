@@ -33,6 +33,7 @@ public:
 
 signals:
     void sleepBtnClicked();
+    void coinsChanged(int money, int energy);
 
 private:
     void moveDoor(bool open);
@@ -45,6 +46,7 @@ private:
     void buildRoom2(bool doorUp, int flag = 0);
     void buildRoom3(bool doorUp, int flag = 0);
     void buildRoom4(bool doorUp, int flag = 0);
+    void initCycle();
 
     QVector<FloorCage*> _interactFloor;
     QVector<QGraphicsPixmapItem*> _floor;
@@ -52,13 +54,14 @@ private:
     Bed* _bed;
     Door* _door;
     Human* _human;
+    int _money = 0, _energy = 0, _wallCount = 0;
     QTimer* _openDoorTimer;
     QTimer* _closeDoorTimer;
-    int _wallCount = 0;
     bool _free = true;
     QPointF _beginDoorPos;
     QPushButton* _sleepBtn;
     QVector<QPushButton*> _interactBtns;
+    QTimer* _gameCycleTimer;
 };
 
 #endif // ROOM_H

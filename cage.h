@@ -18,7 +18,9 @@ public:
         HookahType,
         ShellyType,
         Ps4Type,
-        DotaType
+        DotaType,
+        HammerType,
+        SixBybeType
     };
 
     QRectF boundingRect() const;
@@ -27,6 +29,10 @@ public:
     void setType(BuildingType type);
     QString getTypeString();
     QPixmap getPixmap();
+    int getMoneyCost();
+    void setMoneyCost(int cost);
+    int getEnergyCost();
+    void setEnergyCost();
 
 protected:
     QPixmap _pixmap;
@@ -34,6 +40,8 @@ protected:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*);
     BuildingType _type;
+    int _moneyCost;
+    int _energyCost;
 };
 
 #endif // CAGE_H

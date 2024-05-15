@@ -9,10 +9,11 @@
 
 Room::Room(bool doorUp, QObject* parent)
     : QObject{parent}, QGraphicsItemGroup(), _bed(new Bed(QPixmap(":/images/resourses/images/bed.png")))
-    , _door(new Door(QPixmap(":/images/resourses/images/door.jpg"))), _openDoorTimer(new QTimer(this)), _closeDoorTimer(new QTimer(this))
+    , _door(new Door(QPixmap(":/images/resourses/images/door.jpg"))), _openDoorTimer(new QTimer(this))
+    , _closeDoorTimer(new QTimer(this)), _gameCycleTimer(new QTimer(this))
 {
     for (int i = 0; i < 14; ++i)
-        _interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png")));
+        _interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png"), &_money, &_energy));
 
     int roomNumber = QRandomGenerator::global()->bounded(1, 5);
 
@@ -25,6 +26,9 @@ Room::Room(bool doorUp, QObject* parent)
     _closeDoorTimer->setInterval(30);
     connect(_openDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(true); });
     connect(_closeDoorTimer, &QTimer::timeout, this, [=]() { moveDoor(false); });
+
+    _gameCycleTimer->setInterval(1000);
+    connect(_gameCycleTimer, &QTimer::timeout, this, &Room::initCycle);
 
     for (int i = 0; i < 14; ++i)
         _interactFloor[i]->setVisible(false);
@@ -105,8 +109,19 @@ void Room::setHuman(Human* human) {
     addToGroup(h);
     _human->setPos(-57, -57);
     _human->setInRoom();
+    _gameCycleTimer->start();
     setFree(false);
 }
+
+void Room::initCycle() {
+    for (int i = 0; i < 14; ++i) {
+        _money += _interactFloor[i]->getMoneyPerSec();
+        _energy += _interactFloor[i]->getEnergyPerSec();
+    }
+    _money += _bed->getMoneyPerSec();
+    emit coinsChanged(_money, _energy);
+}
+
 void Room::setFree(bool status) {
     _free = status;
     startClosingDoor();

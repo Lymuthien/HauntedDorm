@@ -137,7 +137,7 @@ QTabBar::tab {
          <item row="0" column="1" rowspan="2">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Атака: 4&lt;/p&gt;&lt;p&gt;Дистанция: 4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Let's go&lt;br/&gt;Bling bling&lt;/p&gt;&lt;p&gt;Атака: 4&lt;/p&gt;&lt;p&gt;Дистанция: 4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
@@ -167,7 +167,7 @@ QTabBar::tab {
          <item row="1" column="1" rowspan="2">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Играть можно&lt;br/&gt;только в UFC и...&lt;br/&gt;Mortal Kombat 11&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;Выход: 1 эн/сек&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Играть можно&lt;br/&gt;только в&lt;br/&gt;Mortal Kombat 11&lt;/p&gt;&lt;p&gt;&lt;br/&gt;Выход: 1 эн/сек&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>

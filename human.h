@@ -29,16 +29,12 @@ signals:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*);
 
-    int _money = 0;
-    int _energy = 0;
     int _speed = 12;
     bool _inRoom = false;
     QPointF _posBeforeCollision;
     QPixmap _pixmap;
-    int _pixmapWidth;
-    int _pixmapHeight;
+    int _pixmapWidth, _pixmapHeight;
     QVector<QTimer*> _movingTimers;
-
 };
 
 #endif // HUMAN_H

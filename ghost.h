@@ -28,7 +28,7 @@ private:
 
     int _hp = 512;
     int _maxHp = 512;
-    int _damage = 2;
+    int _damage = 4;
     QTimer* hillTimer;
     QTimer* findRoomTimer;
     QVector<QPoint> _hillPoints;

@@ -288,6 +288,52 @@ QPushButton:pressed {
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="moneyCount">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>20</y>
+     <width>121</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 25px;
+border-radius: 10px;</string>
+   </property>
+   <property name="text">
+    <string>0</string>
+   </property>
+   <property name="icon">
+    <iconset theme="emblem-favorite"/>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="energyCount">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>20</y>
+     <width>121</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 25px;
+border-radius: 10px;</string>
+   </property>
+   <property name="text">
+    <string>0</string>
+   </property>
+   <property name="icon">
+    <iconset theme="multimedia-volume-control"/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

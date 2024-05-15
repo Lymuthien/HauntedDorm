@@ -32,7 +32,6 @@ signals:
 private slots:
     void keyPressEvent(QKeyEvent* event);
     void on_timeBeforeGhost_timeChanged(const QTime &time);
-
     void on_gameTime_timeChanged(const QTime &time);
 
 private:
@@ -44,6 +43,7 @@ private:
     void initGhost();
     void moveGhostHp();
     void removeRoom(Room *room);
+    void setCoins(int money, int energy);
 
     Ui::Map *ui;
     

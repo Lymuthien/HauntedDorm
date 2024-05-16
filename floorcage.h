@@ -12,23 +12,20 @@ public:
 
     void setBuilding(BuildingType type);
     void deleteBuilding();
-    bool isVisible();
+    bool visible();
     void setVisible(bool visible);
-    bool isFree();
+    bool free();
     void upgrade();
     int getMoneyPerSec();
     int getEnergyPerSec();
-    int getCost();
     void clicked();
 
 private:
-    AddBuildingForm* _form = nullptr;
-    UpgrateForm* _upgradeForm = nullptr;
-    QPixmap _emptyPixmap;
-    bool _free = true, _visible = false;
-    int _moneyPerSec = 0, _energyPerSec = 0, _cost = 0, _energyCost = 0;
-    int* humanMoney;
-    int* humanEnergy;
+    AddBuildingForm* m_form = nullptr;
+    UpgrateForm* m_upgradeForm = nullptr;
+    QPixmap m_emptyPixmap;
+    bool m_free = true, m_visible = false;
+    int m_moneyPerSec = 0, m_energyPerSec = 0;
 };
 
 #endif // FLOORCAGE_H

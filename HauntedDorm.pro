@@ -49,7 +49,6 @@ HEADERS += \
 FORMS += \
     addbuildingform.ui \
     gameover.ui \
-    mainwindow.ui \
     map.ui \
     menu.ui \
     settings.ui \

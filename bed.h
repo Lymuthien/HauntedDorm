@@ -8,7 +8,7 @@ class Bed : public Cage
 {
     Q_OBJECT
 public:
-    explicit Bed(QPixmap pixmap, QObject *parent = nullptr);
+    explicit Bed(QPixmap pixmap, int *money, int *energy, QObject *parent = nullptr);
 
     void upgrade();
     void takeTheBed(QPixmap pixmap);
@@ -16,7 +16,7 @@ public:
     void clicked();
 
 private:
-    int _moneyPerSec = 2;
+    int _moneyPerSec = 1;
     UpgrateForm* _form = nullptr;
 };
 

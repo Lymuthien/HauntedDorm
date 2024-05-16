@@ -6,7 +6,7 @@
 #include <QTimer>
 
 Human::Human(const QPixmap pixmap, int width, int height, QObject *parent)
-    : QObject{parent}, QGraphicsItem(), _pixmap(pixmap), _pixmapWidth(width), _pixmapHeight(height)
+    : QObject{parent}, QGraphicsItem(), m_pixmap(pixmap), m_pixmapWidth(width), m_pixmapHeight(height)
 {}
 
 void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
@@ -15,75 +15,75 @@ void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     QList<QGraphicsItem *> colliding = scene()->collidingItems(this);
 
     if (processCollidings(colliding) == false)
-        setPos(_posBeforeCollision);
+        setPos(m_posBeforeCollision);
     else
-        _posBeforeCollision = currentPos;
-
-    painter->drawPixmap(QRect(0, 0, _pixmapWidth, _pixmapHeight), _pixmap);
+        m_posBeforeCollision = currentPos;
+    
+    painter->drawPixmap(QRect(0, 0, m_pixmapWidth, m_pixmapHeight), m_pixmap);
 }
 
 QPixmap Human::getPixmap() {
-    return _pixmap;
+    return m_pixmap;
 }
 
 QRectF Human::boundingRect() const
 {
-    return QRectF(0, 0, _pixmapWidth, _pixmapHeight);
+    return QRectF(0, 0, m_pixmapWidth, m_pixmapHeight);
 }
 
 void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
     for (int i = 0; i < 3; ++i) {
-        _movingTimers.append(new QTimer());
-        _movingTimers[i]->setInterval(35);
+        m_movingTimers.append(new QTimer());
+        m_movingTimers[i]->setInterval(35);
     }
 
     int flag = 1;
 
     if (x()>doorPos.x()) flag = -1;
     else flag = 1;
-    connect(_movingTimers[0], &QTimer::timeout, this, [=]() {
+    connect(m_movingTimers[0], &QTimer::timeout, this, [=]() {
         if (x() - doorPos.x() < 6 && x() > doorPos.x()) {
-            _movingTimers[0]->stop();
-            _movingTimers[1]->start();
+            m_movingTimers[0]->stop();
+            m_movingTimers[1]->start();
         }
         setX(x() + 3 * flag);
     });
     if (y()>bedPos.y()) flag = -1;
     else flag = 1;
-    connect(_movingTimers[1], &QTimer::timeout, this, [=]() {
+    connect(m_movingTimers[1], &QTimer::timeout, this, [=]() {
         if (abs(y() - doorPos.y()) <= 57*2) emit nearTheDoor();
         if (y() == bedPos.y() || (doorPos.x() == bedPos.x() && abs(y() - bedPos.y()) <= 57*2 + 2)) {
-            _movingTimers[1]->stop();
-            _movingTimers[2]->start();
+            m_movingTimers[1]->stop();
+            m_movingTimers[2]->start();
         }
         setY(y() + 3 * flag);
     });
     if (doorPos.x()>bedPos.x()) flag = -1;
     else flag = 1;
-    connect(_movingTimers[2], &QTimer::timeout, this, [=]() {
+    connect(m_movingTimers[2], &QTimer::timeout, this, [=]() {
         if (abs(x() - bedPos.x()) <= 60) {
-            _movingTimers[2]->stop();
+            m_movingTimers[2]->stop();
             emit nearTheBed();
         }
         setX(x() + 3 * flag);
     });
-    _movingTimers[0]->start();
+    m_movingTimers[0]->start();
 }
 
-int Human::getSpeed() {
-    return _speed;
+int Human::speed() {
+    return m_speed;
 }
 
 void Human::setInRoom() {
-    _inRoom = true;
+    m_inRoom = true;
 }
 
 bool Human::isInRoom() {
-    return _inRoom;
+    return m_inRoom;
 }
 
 void Human::setSpeed(int speed) {
-    _speed = speed;
+    m_speed = speed;
 }
 
 

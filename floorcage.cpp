@@ -1,7 +1,7 @@
 #include "floorcage.h"
 
-FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent) : Cage{pixmap},
-    _emptyPixmap(pixmap), humanMoney(money), humanEnergy(energy) {
+FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
+    : Cage{pixmap, money, energy}, m_emptyPixmap(pixmap) {
     setType(UninitializedType);
 }
 
@@ -13,70 +13,76 @@ void FloorCage::setBuilding(BuildingType type) {
         return;
     case HookahType:
         _pixmap = QPixmap(":/images/resourses/images/hookah.png");
-        _energyCost += 256;
+        setEnergyCost(getEnergyCost() + 256);
+        setCurrentEnergy(getCurrentEnergy() - 256);
         break;
     case ShellyType:
         _pixmap = QPixmap(":/images/resourses/images/shelly.png");
-        _cost += 8;
+        setMoneyCost(getMoneyCost() + 8);
+        setCurrentMoney(getCurrentMoney() - 8);
         break;
     case Ps4Type:
         _pixmap = QPixmap(":/images/resourses/images/ps4.png");
-        _cost += 200;
+        setMoneyCost(getMoneyCost() + 200);
+        setCurrentMoney(getCurrentMoney() - 200);
         break;
     case DotaType:
         _pixmap = QPixmap(":/images/resourses/images/dota.png");
-        _energyCost += 128;
+        setEnergyCost(getEnergyCost() + 128);
+        setCurrentEnergy(getCurrentEnergy() - 128);
         break;
     case HammerType:
         _pixmap = QPixmap(":/images/resourses/images/hammer.png");
-        _energyCost += 512;
+        setEnergyCost(getEnergyCost() + 512);
+        setCurrentEnergy(getCurrentEnergy() - 512);
         break;
     case SixBybeType:
         _pixmap = QPixmap(":/images/resourses/images/6-bybe.png");
-        _energyCost += 1024;
+        setEnergyCost(getEnergyCost() + 1024);
+        setCurrentEnergy(getCurrentEnergy() - 1024);
         break;
     default:
         break;
     }
 
     update();
-    _free = false;
+    if (m_upgradeForm != nullptr) m_upgradeForm->updateText();
+    m_free = false;
     show();
 }
 
 void FloorCage::deleteBuilding() {
-    _moneyPerSec = 0;
-    _energyPerSec = 0;
-    *humanMoney += _cost * 0.75;
-    *humanEnergy += _energyCost * 0.75;
-    _cost = 0;
-    _energyCost = 0;
-    _pixmap = _emptyPixmap;
+    m_moneyPerSec = 0;
+    m_energyPerSec = 0;
+    setCurrentMoney(getCurrentMoney() + getMoneyCost() * 0.75);
+    setCurrentEnergy(getCurrentEnergy() + getEnergyCost() * 0.75);
+    setMoneyCost(0);
+    setEnergyCost(0);
+    _pixmap = m_emptyPixmap;
     update();
     setType(UninitializedType);
-    setVisible(_visible);
-    _free = true;
-
+    setVisible(m_visible);
+    m_free = true;
 }
 
 void FloorCage::clicked() {
-    if (_free) {
-        if (_form == nullptr) {
-            _form = new AddBuildingForm(this, humanMoney, humanEnergy);
-            connect(_form, &AddBuildingForm::addBuilding, this, &FloorCage::setBuilding);
+    if (m_free) {
+        if (m_form == nullptr) {
+            m_form = new AddBuildingForm(this);
+            connect(m_form, &AddBuildingForm::addBuilding, this, &FloorCage::setBuilding);
         }
-        _form->show();
+        m_form->show();
     }
     else {
-        if (_upgradeForm == nullptr)
-            _upgradeForm = new UpgrateForm(this);
-        _upgradeForm->show();
+        if (m_upgradeForm == nullptr)
+            m_upgradeForm = new UpgrateForm(this);
+        m_upgradeForm->show();
     }
 
 }
 
-bool FloorCage::isVisible() {
-    return _visible;
+bool FloorCage::visible() {
+    return m_visible;
 }
 
 void FloorCage::setVisible(bool visible) {
@@ -84,34 +90,25 @@ void FloorCage::setVisible(bool visible) {
         show();
     else
         hide();
-    _visible = visible;
+    m_visible = visible;
 }
 
-bool FloorCage::isFree() {
-    return _free;
+bool FloorCage::free() {
+    return m_free;
 }
 
 void FloorCage::upgrade()
 {
-    int buffCost = _cost;
-    if (_moneyPerSec) {
-        _moneyPerSec *= 2;
-        _cost += buffCost;
-    }
-    if (_energyPerSec) {
-        _energyPerSec *= 0;
-        _cost += buffCost;
-    }
+    m_moneyPerSec *= 2;
+    m_energyPerSec *= 2;
+    Cage::upgrade();
+
 }
 
 int FloorCage::getMoneyPerSec() {
-    return _moneyPerSec;
+    return m_moneyPerSec;
 }
 
 int FloorCage::getEnergyPerSec() {
-    return _energyPerSec;
-}
-
-int FloorCage::getCost() {
-    return _cost;
+    return m_energyPerSec;
 }

@@ -6,7 +6,7 @@
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-Menu::Menu(QPixmap* skins, QWidget *parent) : QWidget(parent), ui(new Ui::Menu), skins(skins) {
+Menu::Menu(QPixmap* skins, QWidget *parent) : QWidget(parent), ui(new Ui::Menu), m_skins(skins) {
     ui->setupUi(this);
 
     QPalette palette = this->palette();
@@ -21,7 +21,7 @@ Menu::Menu(QPixmap* skins, QWidget *parent) : QWidget(parent), ui(new Ui::Menu),
     connect(ui->startBtn, &QPushButton::clicked, this, &Menu::btnClicked);
 }
 
-void Menu::SetCoinsLbl(QString str) {
+void Menu::setCoinsLabel(QString str) {
     ui->label->setText(str);
 }
 
@@ -48,18 +48,18 @@ QPixmap Menu::getSkin() {
 }
 
 void Menu::on_skin1Btn_clicked() {
-    ui->skinImg->setPixmap(skins[0]);
+    ui->skinImg->setPixmap(m_skins[0]);
 }
 
 void Menu::on_skin2Btn_clicked() {
-    ui->skinImg->setPixmap(skins[1]);
+    ui->skinImg->setPixmap(m_skins[1]);
 }
 
 void Menu::on_skin3Btn_clicked() {
-    ui->skinImg->setPixmap(skins[2]);
+    ui->skinImg->setPixmap(m_skins[2]);
 }
 
 void Menu::on_skin4Btn_clicked() {
-    ui->skinImg->setPixmap(skins[3]);
+    ui->skinImg->setPixmap(m_skins[3]);
 }
 

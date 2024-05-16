@@ -1,6 +1,6 @@
 #include "door.h"
 
-Door::Door(QPixmap pixmap, QObject *parent) : Cage{pixmap} {
+Door::Door(QPixmap pixmap, int *money, int *energy, QObject *parent) : Cage{pixmap, money, energy} {
     setType(DoorType);
 }
 
@@ -8,6 +8,7 @@ void Door::upgrade() {
     _maxHp *= 2;
     _hp = _maxHp;
     emit hpChanged();
+    Cage::upgrade();
 }
 
 void Door::changePixmap(QPixmap pixmap) {

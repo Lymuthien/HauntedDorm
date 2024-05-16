@@ -50,16 +50,16 @@ private:
     const int WALL_COUNT_WIDTH = 33;
     const int WALL_COUNT_HEIGHT = 19;
 
-    QTimer* humanAndDoorTimer;
-    QTimer* ghostAndDoorTimer;
-    QVector<Cage*> _walls;
-    QGraphicsScene* _scene;
-    QVector<Room*> _rooms;
-    Human* _human;
-    QVector<Human*> _humanBots;
-    Ghost* _ghost;
-    QVector<QPoint> _ghostHillZone;
-    QPixmap* skins;
+    Human* m_human;
+    Ghost* m_ghost;
+    QPixmap* m_skins;
+    QTimer* m_humanAndDoorTimer;
+    QTimer* m_ghostAndDoorTimer;
+    QVector<QPoint> m_ghostHillZone;
+    QGraphicsScene* m_scene;
+    QVector<Cage*> m_walls;
+    QVector<Room*> m_rooms;
+    QVector<Human*> m_humanBots;
 };
 
 #endif // MAP_H

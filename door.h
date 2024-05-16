@@ -9,7 +9,7 @@ class Door : public Cage
 {
     Q_OBJECT
 public:
-    explicit Door(QPixmap pixmap, QObject *parent = nullptr);
+    explicit Door(QPixmap pixmap, int *money, int *energy, QObject *parent = nullptr);
     void upgrade();
     void changePixmap(QPixmap pixmap);
     int getMaxHp();

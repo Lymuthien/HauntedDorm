@@ -13,7 +13,7 @@ class AddBuildingForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit AddBuildingForm(Cage* cage, int *money, int *energy, QWidget *parent = nullptr);
+    explicit AddBuildingForm(Cage* cage, QWidget *parent = nullptr);
     ~AddBuildingForm();
 
 signals:
@@ -30,8 +30,6 @@ private slots:
 private:
     Ui::AddBuildingForm *ui;
     Cage* _cage;
-    int* currentMoney;
-    int* currentEnergy;
 };
 
 #endif // ADDBUILDINGFORM_H

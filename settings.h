@@ -29,9 +29,10 @@ private slots:
     void on_screenModeButton_stateChanged(int arg1);
 
 private:
-    Ui::Settings *ui;
-    bool* _settings;
     void setIcons();
+
+    Ui::Settings *ui;
+    bool* m_settings;
 };
 
 #endif // SETTINGS_H

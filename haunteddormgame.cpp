@@ -11,26 +11,26 @@
 #include <QFile>
 
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, _window(new MainWindow), menu(new Menu(skins))
+    : QObject{parent}, m_window(new MainWindow), m_menu(new Menu(m_skins))
 {
     readCache();
 
-    _music.setMedia(QUrl::fromUserInput("qrc:/music/resourses/music/bg-music.mp3"));
-    _music.setVolume(20);
-    QObject::connect(&_music, &QMediaPlayer::stateChanged, [&](QMediaPlayer::State state){
-                         if (state == QMediaPlayer::StoppedState && _settings[0] == 1) {
-                             _music.setPosition(0);
-                             _music.play();
+    m_music.setMedia(QUrl::fromUserInput("qrc:/music/resourses/music/bg-music.mp3"));
+    m_music.setVolume(20);
+    QObject::connect(&m_music, &QMediaPlayer::stateChanged, [&](QMediaPlayer::State state){
+        if (state == QMediaPlayer::StoppedState && m_settings[0] == 1) {
+                             m_music.setPosition(0);
+                             m_music.play();
                          }});
 
-    _sound[0].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/button-in-menu-pressed.wav"));
-    _sound[1].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/hitting-door-sound.wav"));
-    _sound[2].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/quite-pressing.wav"));
+    m_sound[0].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/button-in-menu-pressed.wav"));
+    m_sound[1].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/hitting-door-sound.wav"));
+    m_sound[2].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/quite-pressing.wav"));
 
-    menu->SetCoinsLbl(QString::number(_coins));
-    connect(menu, &Menu::settingsBtnClicked, this, &HauntedDormGame::showSettings);
-    connect(menu, &Menu::startBtnClicked, this, &HauntedDormGame::startGame);
-    connect(menu, &Menu::btnClicked, this, [=]() {playSound(0);});
+    m_menu->setCoinsLabel(QString::number(m_coins));
+    connect(m_menu, &Menu::settingsBtnClicked, this, &HauntedDormGame::showSettings);
+    connect(m_menu, &Menu::startBtnClicked, this, &HauntedDormGame::startGame);
+    connect(m_menu, &Menu::btnClicked, this, [=]() {playSound(0);});
 }
 
 void HauntedDormGame::readCache() {
@@ -39,30 +39,30 @@ void HauntedDormGame::readCache() {
     QTextStream in(&cache);
     QStringList settingsCache = in.readLine().split(" ");
     for (int i = 0; i < 3; ++i)
-        _settings[i] = settingsCache[i].toInt();
-    _coins = in.readLine().toInt();
+        m_settings[i] = settingsCache[i].toInt();
+    m_coins = in.readLine().toInt();
     int skinNum = in.readLine().toInt();
-    menu->setSkin(skins[skinNum]);
+    m_menu->setSkin(m_skins[skinNum]);
 }
 
 void HauntedDormGame::Start()
 {
-    _music.play();
-
-    _window->setCentralWidget(menu);
-    _window->show();
+    m_music.play();
+    
+    m_window->setCentralWidget(m_menu);
+    m_window->show();
 }
 
 void HauntedDormGame::startGame()
 {
-    if (map == nullptr) {
-        map = new Map(menu->getSkin(), skins);
-        connect(map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
-        connect(map, &Map::btnClicked, this, [=]() {playSound(0);});
-        connect(map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
-        connect(map, &Map::doorHitted, this, [=]() {playSound(1);});
+    if (m_map == nullptr) {
+        m_map = new Map(m_menu->getSkin(), m_skins);
+        connect(m_map, &Map::settingsBtnClicked, this, &HauntedDormGame::showSettings);
+        connect(m_map, &Map::btnClicked, this, [=]() {playSound(0);});
+        connect(m_map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
+        connect(m_map, &Map::doorHitted, this, [=]() {playSound(1);});
     }
-    _window->setCentralWidget(map);
+    m_window->setCentralWidget(m_map);
 }
 
 void HauntedDormGame::endGame()
@@ -73,51 +73,37 @@ void HauntedDormGame::endGame()
 }
 
 void HauntedDormGame::setGameOver(bool victory) {
-    if (gameOver == nullptr) {
-        gameOver = new GameOver(victory);
-        connect(gameOver, &GameOver::goToMenu, this, &HauntedDormGame::endGame);
+    if (m_gameOver == nullptr) {
+        m_gameOver = new GameOver(victory);
+        connect(m_gameOver, &GameOver::goToMenu, this, &HauntedDormGame::endGame);
     }
-    gameOver->show();
-    if (victory) _coins += 500;
+    m_gameOver->show();
+    if (victory) m_coins += 500;
 }
 
 void HauntedDormGame::playMusic(bool value)
 {
     if (value)
-        _music.play();
+        m_music.play();
     else
-        _music.pause();
+        m_music.pause();
 }
 
 void HauntedDormGame::playSound(int number)
 {
-    if (_settings[1])
-        _sound[number].play();
-}
-
-bool* HauntedDormGame::getSettings()
-{
-    return _settings;
-}
-
-void HauntedDormGame::setSettings(int number, bool value)
-{
-    _settings[number] = value;
+    if (m_settings[1])
+        m_sound[number].play();
 }
 
 void HauntedDormGame::showSettings()
 {
-    if (SettingsForm == nullptr) {
-        SettingsForm = new Settings(_settings);
-        connect(SettingsForm, &Settings::musicOn, this, [=]() {playMusic(1);});
-        connect(SettingsForm, &Settings::musicOff, this, [=]() {playMusic(0);});
-        connect(SettingsForm, &Settings::fullScreenSet, _window, [this]() {_window->setFullScreen(1); });
-        connect(SettingsForm, &Settings::normalScreenSet, _window, [this]() {_window->setFullScreen(0); });
+    if (m_settingsForm == nullptr) {
+        m_settingsForm = new Settings(m_settings);
+        connect(m_settingsForm, &Settings::musicOn, this, [=]() {playMusic(1);});
+        connect(m_settingsForm, &Settings::musicOff, this, [=]() {playMusic(0);});
+        connect(m_settingsForm, &Settings::fullScreenSet, m_window, [this]() {m_window->setFullScreen(1); });
+        connect(m_settingsForm, &Settings::normalScreenSet, m_window, [this]() {m_window->setFullScreen(0); });
     }
-    SettingsForm->hide();
-    SettingsForm->show();
+    m_settingsForm->hide();
+    m_settingsForm->show();
 }
-
-
-
-

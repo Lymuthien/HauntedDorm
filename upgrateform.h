@@ -15,10 +15,16 @@ class UpgrateForm : public QWidget
 public:
     explicit UpgrateForm(Cage* cage, QWidget *parent = nullptr);
     ~UpgrateForm();
+    void updateText();
+
+private slots:
+    void on_upgradeBtn_clicked();
+
+    void on_sellBtn_clicked();
 
 private:
     Ui::upgrateForm *ui;
-    Cage* _cage;
+    Cage* m_cage;
 };
 
 #endif // UPGRATEFORM_H

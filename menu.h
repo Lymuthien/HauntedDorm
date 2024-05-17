@@ -15,7 +15,7 @@ public:
     explicit Menu(QPixmap *skins, QWidget *parent = nullptr);
     ~Menu();
 
-    void SetCoinsLbl(QString str);
+    void setCoinsLabel(QString str);
     void setSkin(QPixmap skin);
     QPixmap getSkin();
 
@@ -33,7 +33,7 @@ private slots:
 
 private:
     Ui::Menu *ui;
-    QPixmap* skins;
+    QPixmap* m_skins;
 };
 
 #endif // MENU_H

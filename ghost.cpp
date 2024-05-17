@@ -18,6 +18,7 @@ int Ghost::getHp() {
 
 void Ghost::setHp (int hp) {
     _hp = hp;
+    emit hpChanged();
 }
 
 int Ghost::getDamage() {
@@ -26,9 +27,9 @@ int Ghost::getDamage() {
 
 void Ghost::upgrade() {
     _maxHp *= 2;
-    _hp = _maxHp;
+    setHp(_maxHp);
     _damage *= 2;
-    setSpeed(getSpeed() + 3);
+    setSpeed(speed() + 3);
 }
 
 int Ghost::getMaxHp() {
@@ -42,6 +43,8 @@ void Ghost::goToHillZone() {
         else findRandomRoom(rooms);
         return;
     }
+    toXTimer->stop();
+    toYTimer->stop();
 
     if ((y() == _hillPoints[0].y()) && (x() == _hillPoints[0].x() || x() == _hillPoints[1].x())) {
         _hp += _maxHp * 0.1;
@@ -60,12 +63,13 @@ void Ghost::goToPoint(QPointF point) {
     if (x() == point.x() && y() == point.y()) return;
     toXTimer = new QTimer();
     toYTimer = new QTimer();
-    toXTimer->setInterval(36 / ((getSpeed() / 3)));
-    toYTimer->setInterval(36 / ((getSpeed() / 3)));
+    toXTimer->setInterval(36 / ((speed() / 3)));
+    toYTimer->setInterval(36 / ((speed() / 3)));
 
     int flag = 1;
     if (x()>point.x()) flag = -1;
     else flag = 1;
+    //if hilltimer !isactive
     connect(toXTimer, &QTimer::timeout, this, [=]() {
         if (x() == point.x()) {
             toXTimer->stop();
@@ -95,8 +99,8 @@ void Ghost::findRandomRoom(QVector<Room*>* room, int roomNum) {
     while ((roomNum = QRandomGenerator::global()->bounded(rooms.count())))
         if (rooms[roomNum] != nullptr)
             if (!rooms[roomNum]->isFree())
-                if (rooms[roomNum]->getDoor() != nullptr) {
-                    goToPoint(rooms[roomNum]->getDoor()->pos() + rooms[roomNum]->pos());
+                if (rooms[roomNum]->door() != nullptr) {
+                    goToPoint(rooms[roomNum]->door()->pos() + rooms[roomNum]->pos());
                     break;
                 }
 }

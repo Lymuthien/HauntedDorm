@@ -21,37 +21,29 @@ public:
     void Start();
 
 private:
-    void gameLoop();
     void playMusic(bool value);
     void playSound(int number);
-
     void startGame();
     void endGame();
     void showSettings();
     void setGameOver(bool victory);
-
-    bool* getSettings();
-    void setSettings(int number, bool value);
-
     void readCache();
 
-    MainWindow* _window;
-    QMediaPlayer _music;
-    int _coins = 0;
+    MainWindow* m_window;
+    QMediaPlayer m_music;
+    int m_coins = 0;
 
-    QSoundEffect _sound[3];
-    bool _settings[4] = {1, 1, 0};
+    QSoundEffect m_sound[3];
+    bool m_settings[4] = {1, 1, 0};
 
-    Settings* SettingsForm = nullptr;
-    Menu* menu;
-    Map* map = nullptr;
-    GameOver* gameOver = nullptr;
-    QPixmap skins[4] {QPixmap(":/skins/resourses/images/skins/german.png"),
-                           QPixmap(":/skins/resourses/images/skins/katya.png"),
-                           QPixmap(":/skins/resourses/images/skins/tanya.png"),
-                           QPixmap(":/skins/resourses/images/skins/nikita.png")};
-
-signals:
+    Settings* m_settingsForm = nullptr;
+    Menu* m_menu;
+    Map* m_map = nullptr;
+    GameOver* m_gameOver = nullptr;
+    QPixmap m_skins[4] {QPixmap(":/skins/resourses/images/skins/german.png"),
+                        QPixmap(":/skins/resourses/images/skins/katya.png"),
+                        QPixmap(":/skins/resourses/images/skins/tanya.png"),
+                        QPixmap(":/skins/resourses/images/skins/nikita.png")};
 };
 
 #endif // HAUNTEDDORMGAME_H

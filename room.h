@@ -22,17 +22,18 @@ public:
     void setFree(bool status);
     bool isFree();
     void setHuman(Human* human);
-    Door* getDoor();
-    Bed* getBed();
-    QPushButton* getSleepBtn();
+    Door* door();
+    Bed* bed();
+    QPushButton* sleepBtn();
     void startOpeningDoor();
     void startClosingDoor();
-    void showSleepBtn(bool show);
     void createSleepButton(QWidget* w);
     QVector<FloorCage*> getInteractFloor();
 
 signals:
     void sleepBtnClicked();
+    void coinsChanged(int money, int energy);
+    void attackGhostT(QPointF pos, int dmg);
 
 private:
     void moveDoor(bool open);
@@ -40,25 +41,30 @@ private:
     void setDoorCoordinates(bool doorUp, QPointF pos1, QPointF pos2);
     void addFloor(int maxI, int maxJ);
     void addAllItems();
+    void attackGhost(FloorCage *_cage);
     void showInteractingCages();
     void buildRoom1(bool doorUp, int flag = 0);
     void buildRoom2(bool doorUp, int flag = 0);
     void buildRoom3(bool doorUp, int flag = 0);
     void buildRoom4(bool doorUp, int flag = 0);
+    void initCycle();
+    void initBotCycle();
 
-    QVector<FloorCage*> _interactFloor;
-    QVector<QGraphicsPixmapItem*> _floor;
-    QVector<Cage*> _walls;
-    Bed* _bed;
-    Door* _door;
-    Human* _human;
-    QTimer* _openDoorTimer;
-    QTimer* _closeDoorTimer;
-    int _wallCount = 0;
-    bool _free = true;
-    QPointF _beginDoorPos;
-    QPushButton* _sleepBtn;
-    QVector<QPushButton*> _interactBtns;
+    bool m_free = true;
+    int m_money = 0, m_energy = 0, m_wallCount = 0;
+    QPointF m_beginDoorPos;
+    QTimer* m_openDoorTimer;
+    QTimer* m_closeDoorTimer;
+    QTimer* m_gameCycleTimer;
+    QTimer* m_botCycleTimer;
+    QPushButton* m_sleepBtn;
+    QVector<QPushButton*> m_interactBtns;
+    QVector<FloorCage*> m_interactFloor;
+    QVector<QGraphicsPixmapItem*> m_floor;
+    QVector<Cage*> m_walls;
+    Bed* m_bed;
+    Door* m_door;
+    Human* m_human;
 };
 
 #endif // ROOM_H

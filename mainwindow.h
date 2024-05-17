@@ -12,15 +12,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     void setFullScreen(bool value);
-
-signals:
 
 private:
     bool _isFullScreen = false;
-
-private slots:
-    //void keyPressEvent(QKeyEvent *event);
 };
 #endif // MAINWINDOW_H

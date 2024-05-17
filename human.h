@@ -15,10 +15,9 @@ public:
     void moveToBed(QPointF doorPos, QPointF bedPos);
     bool isInRoom();
     void setInRoom();
-    QPixmap getPixmap();
-
-    int getSpeed();
+    int speed();
     void setSpeed(int speed);
+    QPixmap getPixmap();
 
     QRectF boundingRect() const;
 
@@ -29,16 +28,12 @@ signals:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*);
 
-    int _money = 0;
-    int _energy = 0;
-    int _speed = 12;
-    bool _inRoom = false;
-    QPointF _posBeforeCollision;
-    QPixmap _pixmap;
-    int _pixmapWidth;
-    int _pixmapHeight;
-    QVector<QTimer*> _movingTimers;
-
+    bool m_inRoom = false;
+    int m_speed = 12;
+    int m_pixmapWidth, m_pixmapHeight;
+    QPixmap m_pixmap;
+    QPointF m_posBeforeCollision;
+    QVector<QTimer*> m_movingTimers;
 };
 
 #endif // HUMAN_H

@@ -6,7 +6,7 @@
 #include <QTimer>
 
 Human::Human(const QPixmap pixmap, int width, int height, QObject *parent)
-    : QObject{parent}, QGraphicsItem(), m_pixmap(pixmap), m_pixmapWidth(width), m_pixmapHeight(height)
+    : QObject{parent}, QGraphicsItem(), m_pixmapWidth(width), m_pixmapHeight(height), m_pixmap(pixmap)
 {}
 
 void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)

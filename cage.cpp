@@ -50,10 +50,12 @@ void Cage::setType(BuildingType type) {
 }
 
 void Cage::upgrade() {
-    *m_currentMoney -= _moneyCost * 2;
-    *m_currentEnergy -= _energyCost * 2;
-    _moneyCost *= 2;
-    _energyCost *= 2;
+    if (getCurrentMoney() >= getMoneyCost() * 2 && getCurrentEnergy() >= getEnergyCost() *  2) {
+        *m_currentMoney -= _moneyCost * 2;
+        *m_currentEnergy -= _energyCost * 2;
+        _moneyCost *= 2;
+        _energyCost *= 2;
+    }
 }
 
 

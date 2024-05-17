@@ -6,40 +6,58 @@ FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
 }
 
 void FloorCage::setBuilding(BuildingType type) {
-    setType(type);
+    if (getType() != UninitializedType && type != UninitializedType) return;
     switch (type) {
     case UninitializedType:
         deleteBuilding();
         return;
     case HookahType:
-        _pixmap = QPixmap(":/images/resourses/images/hookah.png");
-        setEnergyCost(getEnergyCost() + 256);
-        setCurrentEnergy(getCurrentEnergy() - 256);
+        if (getCurrentEnergy() > 256) {
+            _pixmap = QPixmap(":/images/resourses/images/hookah.png");
+            setEnergyCost(getEnergyCost() + 256);
+            setCurrentEnergy(getCurrentEnergy() - 256);
+            setType(type);
+        }
         break;
     case ShellyType:
-        _pixmap = QPixmap(":/images/resourses/images/shelly.png");
-        setMoneyCost(getMoneyCost() + 8);
-        setCurrentMoney(getCurrentMoney() - 8);
+        if (getCurrentMoney() > 8) {
+            _pixmap = QPixmap(":/images/resourses/images/shelly.png");
+            setMoneyCost(getMoneyCost() + 8);
+            setCurrentMoney(getCurrentMoney() - 8);
+            setType(type);
+        }
         break;
     case Ps4Type:
-        _pixmap = QPixmap(":/images/resourses/images/ps4.png");
-        setMoneyCost(getMoneyCost() + 200);
-        setCurrentMoney(getCurrentMoney() - 200);
+        if (getCurrentMoney() > 200) {
+            _pixmap = QPixmap(":/images/resourses/images/ps4.png");
+            setMoneyCost(getMoneyCost() + 200);
+            setCurrentMoney(getCurrentMoney() - 200);
+            setType(type);
+        }
         break;
     case DotaType:
-        _pixmap = QPixmap(":/images/resourses/images/dota.png");
-        setEnergyCost(getEnergyCost() + 128);
-        setCurrentEnergy(getCurrentEnergy() - 128);
+        if (getCurrentEnergy() > 128) {
+            _pixmap = QPixmap(":/images/resourses/images/dota.png");
+            setEnergyCost(getEnergyCost() + 128);
+            setCurrentEnergy(getCurrentEnergy() - 128);
+            setType(type);
+        }
         break;
     case HammerType:
-        _pixmap = QPixmap(":/images/resourses/images/hammer.png");
-        setEnergyCost(getEnergyCost() + 512);
-        setCurrentEnergy(getCurrentEnergy() - 512);
+        if (getCurrentEnergy() > 512) {
+            _pixmap = QPixmap(":/images/resourses/images/hammer.png");
+            setEnergyCost(getEnergyCost() + 512);
+            setCurrentEnergy(getCurrentEnergy() - 512);
+            setType(type);
+        }
         break;
     case SixBybeType:
-        _pixmap = QPixmap(":/images/resourses/images/6-bybe.png");
-        setEnergyCost(getEnergyCost() + 1024);
-        setCurrentEnergy(getCurrentEnergy() - 1024);
+        if (getCurrentEnergy() > 1024) {
+            _pixmap = QPixmap(":/images/resourses/images/6-bybe.png");
+            setEnergyCost(getEnergyCost() + 1024);
+            setCurrentEnergy(getCurrentEnergy() - 1024);
+            setType(type);
+        }
         break;
     default:
         break;
@@ -66,7 +84,7 @@ void FloorCage::deleteBuilding() {
 }
 
 void FloorCage::clicked() {
-    if (m_free) {
+    if (getType() == UninitializedType) {
         if (m_form == nullptr) {
             m_form = new AddBuildingForm(this);
             connect(m_form, &AddBuildingForm::addBuilding, this, &FloorCage::setBuilding);

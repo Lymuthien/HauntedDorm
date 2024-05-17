@@ -2,7 +2,7 @@
 
 Bed::Bed(QPixmap pixmap, int* money, int* energy, QObject *parent) : Cage(pixmap, money, energy) {
     setType(BedType);
-    setMoneyCost(16);
+    setMoneyCost(13);
 }
 
 void Bed::upgrade() {

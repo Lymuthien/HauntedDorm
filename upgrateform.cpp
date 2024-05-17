@@ -43,12 +43,9 @@ UpgrateForm::~UpgrateForm()
 
 void UpgrateForm::on_upgradeBtn_clicked()
 {
-    if (m_cage->getCurrentMoney() >= m_cage->getMoneyCost() * 2 &&
-        m_cage->getCurrentEnergy() >= m_cage->getEnergyCost() *  2) {
-        m_cage->upgrade();
-        updateText();
-        hide();
-    }
+    m_cage->upgrade();
+    updateText();
+    hide();
 }
 
 void UpgrateForm::on_sellBtn_clicked() {

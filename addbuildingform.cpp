@@ -14,44 +14,32 @@ AddBuildingForm::~AddBuildingForm() {
 }
 
 void AddBuildingForm::on_pushButton_clicked() {
-    if (_cage->getCurrentMoney() > 8) {
-        emit addBuilding(Cage::ShellyType);
-        this->hide();
-    }
+    emit addBuilding(Cage::ShellyType);
+    this->hide();
 }
 
 void AddBuildingForm::on_pushButton_2_clicked() {
-    if (_cage->getCurrentMoney() > 200) {
-        emit addBuilding(Cage::Ps4Type);
-        this->hide();
-    }
+    emit addBuilding(Cage::Ps4Type);
+    this->hide();
 }
 
 void AddBuildingForm::on_pushButton_7_clicked() {
-    if (_cage->getCurrentEnergy() > 1024) {
-        emit addBuilding(Cage::SixBybeType);
-        this->hide();
-    }
+    emit addBuilding(Cage::SixBybeType);
+    this->hide();
 }
 
 void AddBuildingForm::on_pushButton_4_clicked() {
-    if (_cage->getCurrentMoney() > 256) {
-        emit addBuilding(Cage::HookahType);
-        this->hide();
-    }
+    emit addBuilding(Cage::HookahType);
+    this->hide();
 }
 
 void AddBuildingForm::on_pushButton_3_clicked()
 {
-    if (_cage->getCurrentEnergy() > 128) {
-        emit addBuilding(Cage::DotaType);
-        this->hide();
-    }
+    emit addBuilding(Cage::DotaType);
+    this->hide();
 }
 
 void AddBuildingForm::on_pushButton_5_clicked() {
-    if (_cage->getCurrentMoney() > 512) {
-        emit addBuilding(Cage::HammerType);
-        this->hide();
-    }
+    emit addBuilding(Cage::HammerType);
+    this->hide();
 }

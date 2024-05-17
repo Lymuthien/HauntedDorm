@@ -104,15 +104,15 @@ void Map::buildRooms() {
         }
 }
 
-void Map::setCoins(int money, int energy) {
-    ui->moneyCount->setText(QString::number(money));
-    ui->energyCount->setText(QString::number(energy));
-}
-
 void Map::removeRoom(Room* room) {
     int i = m_rooms.indexOf(room);
     m_rooms[i] = nullptr;
     m_rooms.remove(i);
+}
+
+void Map::setCoins(int money, int energy) {
+    ui->moneyCount->setText(QString::number(money));
+    ui->energyCount->setText(QString::number(energy));
 }
 
 void Map::keyPressEvent(QKeyEvent* event)

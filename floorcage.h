@@ -11,6 +11,7 @@ class FloorCage : public Cage
     Q_OBJECT
 public:
     explicit FloorCage(QPixmap pixmap, int *money, int *energy, QObject *parent = nullptr);
+    ~FloorCage();
 
     void setBuilding(BuildingType type);
     void deleteBuilding();

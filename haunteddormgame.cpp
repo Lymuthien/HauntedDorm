@@ -9,9 +9,10 @@
 #include <QUrl>
 #include <QCoreApplication>
 #include <QFile>
+#include <QDebug>
 
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, m_window(new MainWindow), m_menu(new Menu(m_skins))
+    : QObject{parent}, m_window(new MainWindow), m_menu(new Menu(m_skins, m_skinsCode))
 {
     readCache();
 
@@ -62,14 +63,16 @@ void HauntedDormGame::startGame()
         connect(m_map, &Map::gameOver, this, &HauntedDormGame::setGameOver);
         connect(m_map, &Map::doorHitted, this, [=]() {playSound(1);});
     }
+    m_window->takeCentralWidget();
     m_window->setCentralWidget(m_map);
 }
 
-void HauntedDormGame::endGame()
+void HauntedDormGame::endGame(bool victory)
 {
-    //delete map;
-
-    //_window->setCentralWidget(menu);
+    if (victory) m_coins += 500;
+    m_window->takeCentralWidget();
+    m_window->setCentralWidget(m_menu);
+    delete m_map;
 }
 
 void HauntedDormGame::setGameOver(bool victory) {

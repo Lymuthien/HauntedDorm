@@ -10,21 +10,22 @@ class Door : public Cage
     Q_OBJECT
 public:
     explicit Door(QPixmap pixmap, int *money, int *energy, QObject *parent = nullptr);
+    ~Door();
+
     bool upgrade();
     void changePixmap(QPixmap pixmap);
-    int getMaxHp();
-    int getHp();
+    int maxHp();
+    int hp();
     void setHp(int hp);
     void clicked();
-    void createProgressBar(QWidget* w);
 
 signals:
     void hpChanged();
 
 private:
-    int _maxHp = 512;
-    int _hp = 512;
-    UpgrateForm* _form = nullptr;
+    int m_maxHp = 512;
+    int m_hp = 512;
+    UpgrateForm* m_form = nullptr;
 };
 
 #endif // DOOR_H

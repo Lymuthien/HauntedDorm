@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFullScreen(0);
 }
 
-MainWindow::~MainWindow() {}
-
 void MainWindow::setFullScreen(bool value)
 {
     if (value) showFullScreen();

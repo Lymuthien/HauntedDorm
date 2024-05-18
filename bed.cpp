@@ -1,8 +1,13 @@
 #include "bed.h"
+#include "qdebug.h"
 
 Bed::Bed(QPixmap pixmap, int* money, int* energy, QObject *parent) : Cage(pixmap, money, energy) {
     setType(BedType);
     setMoneyCost(13);
+}
+
+Bed::~Bed() {
+    delete m_form;
 }
 
 bool Bed::upgrade() {

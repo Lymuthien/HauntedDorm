@@ -41,5 +41,13 @@
         <file>resourses/images/skins/nikita.png</file>
         <file>resourses/images/skins/katya.png</file>
         <file>resourses/images/skins/german.png</file>
+        <file>resourses/images/skins/skin-5.png</file>
+        <file>resourses/images/skins/skin-4.png</file>
+        <file>resourses/images/skins/skin-3.png</file>
+        <file>resourses/images/skins/skin-2.png</file>
+        <file>resourses/images/skins/skin-1.png</file>
+        <file>resourses/images/skins/skin-8.png</file>
+        <file>resourses/images/skins/skin-7.png</file>
+        <file>resourses/images/skins/skin-6.png</file>
     </qresource>
 </RCC>

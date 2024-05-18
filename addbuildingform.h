@@ -29,7 +29,7 @@ private slots:
 
 private:
     Ui::AddBuildingForm *ui;
-    Cage* _cage;
+    Cage* m_cage;
 };
 
 #endif // ADDBUILDINGFORM_H

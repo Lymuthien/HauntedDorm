@@ -5,13 +5,11 @@ Cage::Cage(const QPixmap pixmap, int* _currentMoney, int* _currentEnergy, QObjec
     : QObject{parent}, QGraphicsItem(), _pixmap(pixmap), m_currentMoney(_currentMoney), m_currentEnergy(_currentEnergy)
 {}
 
-void Cage::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
-{
+void Cage::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
     painter->drawPixmap(QRect(0, 0, _pixmap.width(), _pixmap.height()), _pixmap);
 }
 
-QRectF Cage::boundingRect() const
-{
+QRectF Cage::boundingRect() const {
     return QRectF(0, 0, _pixmap.width(), _pixmap.height());
 }
 
@@ -54,7 +52,6 @@ QPixmap Cage::getPixmap() {
     return _pixmap;
 }
 
-
 void Cage::setType(BuildingType type) {
     _type = type;
 }
@@ -70,7 +67,6 @@ bool Cage::upgrade() {
     }
     return false;
 }
-
 
 int Cage::moneyCost() {
     return m_moneyCost;

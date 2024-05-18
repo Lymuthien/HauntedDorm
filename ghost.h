@@ -11,13 +11,16 @@ class Ghost : public Human
     Q_OBJECT
 public:
     explicit Ghost(QPixmap pixmap, QVector<Room *>* rooms, QVector<QPoint> hillPoints, int width = 50, int height = 100, QObject *parent = nullptr);
+    ~Ghost();
 
     void findRandomRoom(QVector<Room *>* room, int roomNum = 0);
-    int getHp();
+    int hp();
     void setHp (int hp);
+    void setHitCount(int hitCount);
+    int hitCount();
     void upgrade();
-    int getMaxHp();
-    int getDamage();
+    int maxHp();
+    int damage();
 
 signals:
     void moved();
@@ -27,15 +30,12 @@ private:
     void goToHillZone();
     void goToPoint(QPointF point);
 
-    int _hp = 512;
-    int _maxHp = 512;
-    int _damage = 4;
-    QTimer* hillTimer;
-    QTimer* findRoomTimer;
-    QVector<QPoint> _hillPoints;
-    QTimer* toXTimer = nullptr;
-    QTimer* toYTimer = nullptr;
-    QVector<Room*>* rooms;
+    int m_hp = 512, m_maxHp = 512, m_damage = 4, m_hitCount = 0;
+    QTimer* m_hillTimer;
+    QVector<QPoint> m_hillPoints;
+    QTimer* m_toXTimer = nullptr;
+    QTimer* m_toYTimer = nullptr;
+    QVector<Room*>* m_rooms;
 };
 
 #endif // GHOST_H

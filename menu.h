@@ -12,7 +12,7 @@ class Menu : public QWidget
     Q_OBJECT
 
 public:
-    explicit Menu(QPixmap *skins, QWidget *parent = nullptr);
+    explicit Menu(QPixmap *skins, bool* skinsCode, QWidget *parent = nullptr);
     ~Menu();
 
     void setCoinsLabel(QString str);
@@ -26,6 +26,14 @@ signals:
 
 private slots:
     void on_infoBtn_clicked();
+    void on_pushButton_6_clicked();
+    void on_pushButton_10_clicked();
+    void on_pushButton_12_clicked();
+    void on_pushButton_5_clicked();
+    void on_pushButton_13_clicked();
+    void on_pushButton_14_clicked();
+    void on_pushButton_16_clicked();
+    void on_pushButton_15_clicked();
     void on_skin1Btn_clicked();
     void on_skin2Btn_clicked();
     void on_skin3Btn_clicked();
@@ -34,6 +42,8 @@ private slots:
 private:
     Ui::Menu *ui;
     QPixmap* m_skins;
+    int m_coins;
+    bool* m_skinsCode;
 };
 
 #endif // MENU_H

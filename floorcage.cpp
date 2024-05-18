@@ -1,16 +1,24 @@
 #include "floorcage.h"
+#include "qdebug.h"
 #include <QTimer>
 
 FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
-    : Cage{pixmap, money, energy}, m_attackTimer(new QTimer), m_emptyPixmap(pixmap)
-{
+    : Cage{pixmap, money, energy}, m_attackTimer(new QTimer), m_emptyPixmap(pixmap) {
     m_attackTimer->setInterval(1000);
     connect(m_attackTimer, &QTimer::timeout, this, [=]() {emit attackGhost(this);});
     setType(UninitializedType);
 }
 
+FloorCage::~FloorCage() {
+    m_attackTimer->stop();
+    delete m_attackTimer;
+    delete m_form;
+    delete m_upgradeForm;
+}
+
 void FloorCage::setBuilding(BuildingType type) {
     if (getType() != UninitializedType && type != UninitializedType) return;
+
     switch (type) {
     case UninitializedType:
         deleteBuilding();
@@ -21,6 +29,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 256);
             setCurrentEnergy(currentEnergy() - 256);
             setType(type);
+            emit addFunction(HookahType);
         }
         break;
     case ShellyType:
@@ -47,6 +56,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 128);
             setCurrentEnergy(currentEnergy() - 128);
             setType(type);
+            emit addFunction(DotaType);
         }
         break;
     case HammerType:
@@ -55,6 +65,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 512);
             setCurrentEnergy(currentEnergy() - 512);
             setType(type);
+            emit addFunction(HammerType);
         }
         break;
     case SixBybeType:
@@ -63,6 +74,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 1024);
             setCurrentEnergy(currentEnergy() - 1024);
             setType(type);
+            emit addFunction(SixBybeType);
         }
         break;
     default:
@@ -79,6 +91,7 @@ void FloorCage::deleteBuilding() {
     if (m_attackTimer->isActive()) m_attackTimer->stop();
     m_moneyPerSec = 0;
     m_energyPerSec = 0;
+    m_attackTimer->stop();
     setCurrentMoney(currentMoney() + moneyCost() * 0.75);
     setCurrentEnergy(currentEnergy() + energyCost() * 0.75);
     _pixmap = m_emptyPixmap;
@@ -102,7 +115,6 @@ void FloorCage::clicked() {
             m_upgradeForm = new UpgrateForm(this);
         m_upgradeForm->show();
     }
-
 }
 
 bool FloorCage::visible() {

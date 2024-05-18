@@ -19,7 +19,7 @@ GameOver::GameOver(bool victory, QWidget *parent)
         ui->victoryLbl->hide();
         ui->gameOverLbl->setStyleSheet("color: rgb(156, 138, 141);");
     }
-    connect(ui->pushButton, &QPushButton::clicked, this, &GameOver::goToMenu);
+    connect(ui->pushButton, &QPushButton::clicked, this, [=]() {emit goToMenu(victory); hide();});
 }
 
 GameOver::~GameOver()

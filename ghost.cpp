@@ -4,76 +4,96 @@
 
 
 Ghost::Ghost(QPixmap pixmap, QVector<Room*>* rooms, QVector<QPoint> hillPoints, int width, int height, QObject *parent)
-    : Human{pixmap, width, height}, hillTimer(new QTimer()), findRoomTimer(new QTimer()), _hillPoints(hillPoints), rooms(rooms)
+    : Human{pixmap, width, height}, m_hillTimer(new QTimer()), m_hillPoints(hillPoints), m_rooms(rooms)
 {
     setSpeed(6);
-    hillTimer->setInterval(1000);
-    connect(hillTimer, &QTimer::timeout, this, &Ghost::goToHillZone);
-    hillTimer->start();
+    m_hillTimer->setInterval(1000);
+    connect(m_hillTimer, &QTimer::timeout, this, &Ghost::goToHillZone);
+    m_hillTimer->start();
 }
 
-int Ghost::getHp() {
-    return _hp;
+Ghost::~Ghost() {
+    m_hillTimer->stop();
+    delete m_hillTimer;
+    if (m_toXTimer != nullptr) m_toXTimer->stop();
+    delete m_toXTimer;
+    if (m_toYTimer != nullptr) m_toYTimer->stop();
+    delete m_toYTimer;
+}
+
+int Ghost::hp() {
+    return m_hp;
 }
 
 void Ghost::setHp (int hp) {
-    _hp = hp;
+    m_hp = hp;
     emit hpChanged();
 }
 
-int Ghost::getDamage() {
-    return _damage;
+int Ghost::damage() {
+    return m_damage;
 }
 
 void Ghost::upgrade() {
-    _maxHp *= 2;
-    setHp(_maxHp);
-    _damage *= 2;
-    setSpeed(speed() + 3);
+    m_maxHp *= 2;
+    setHp(m_maxHp);
+    m_damage *= 2;
 }
 
-int Ghost::getMaxHp() {
-    return _maxHp;
+int Ghost::maxHp() {
+    return m_maxHp;
 }
 
 void Ghost::goToHillZone() {
-    if (_hp > _maxHp * 0.2) {
-        if (toXTimer == nullptr && toYTimer == nullptr) findRandomRoom(rooms);
-        else if (toXTimer->isActive() || toYTimer->isActive()) return;
-        else findRandomRoom(rooms);
+    if (m_hp > m_maxHp * 0.3) {
+        if (m_toXTimer == nullptr && m_toYTimer == nullptr) findRandomRoom(m_rooms);
+        else if (m_toXTimer->isActive() || m_toYTimer->isActive()) return;
+        else findRandomRoom(m_rooms);
         return;
     }
-    toXTimer->stop();
-    toYTimer->stop();
+    m_toXTimer->stop();
+    m_toYTimer->stop();
 
-    if ((y() == _hillPoints[0].y()) && (x() == _hillPoints[0].x() || x() == _hillPoints[1].x())) {
-        _hp += _maxHp * 0.1;
-        if (_hp > _maxHp)
-            _hp = _maxHp;
+    if ((y() == m_hillPoints[0].y()) && (x() == m_hillPoints[0].x() || x() == m_hillPoints[1].x())) {
+        setHp(hp() + maxHp() * 0.05);
+        if (m_hp > m_maxHp)
+            m_hp = m_maxHp;
     } else {
-        int nearX = abs(_hillPoints[0].x() - x()) > abs(_hillPoints[1].x() - x()) ?
-                        _hillPoints[1].x() : _hillPoints[0].x();
-        int nearY = _hillPoints[0].y();
-        hillTimer->stop();
+        int nearX = abs(m_hillPoints[0].x() - x()) > abs(m_hillPoints[1].x() - x()) ?
+                        m_hillPoints[1].x() : m_hillPoints[0].x();
+        int nearY = m_hillPoints[0].y();
+        m_hillTimer->stop();
+        m_toXTimer->stop();
+        m_toYTimer->stop();
         goToPoint(QPointF(nearX, nearY));
     }
 }
 
+void Ghost::setHitCount(int hitCount) {
+    m_hitCount = hitCount;
+    if (m_hitCount == 100) {
+        m_hitCount = 0;
+        upgrade();
+    }
+}
+
+int Ghost::hitCount() {
+    return m_hitCount;
+}
+
 void Ghost::goToPoint(QPointF point) {
     if (x() == point.x() && y() == point.y()) return;
-    toXTimer = new QTimer();
-    toYTimer = new QTimer();
-    toXTimer->setInterval(36 / ((speed() / 3)));
-    toYTimer->setInterval(36 / ((speed() / 3)));
+    m_toXTimer = new QTimer();
+    m_toYTimer = new QTimer();
 
     int flag = 1;
     if (x()>point.x()) flag = -1;
     else flag = 1;
     //if hilltimer !isactive
-    connect(toXTimer, &QTimer::timeout, this, [=]() {
+    connect(m_toXTimer, &QTimer::timeout, this, [=]() {
         if (x() == point.x()) {
-            toXTimer->stop();
-            toYTimer->start();
+            m_toXTimer->stop();
+            m_toYTimer->start(36 / ((speed() / 3)));
         } else {
             setX(x() + 3 * flag);
             emit moved();
@@ -81,17 +101,19 @@ void Ghost::goToPoint(QPointF point) {
     });
     if (y()>point.y()) flag = -1;
     else flag = 1;
-    connect(toYTimer, &QTimer::timeout, this, [=]() {
+    connect(m_toYTimer, &QTimer::timeout, this, [=]() {
         if (y() == point.y()) {
-            toYTimer->stop();
+            m_toYTimer->stop();
             goToPoint(QPointF(x(), 57*9));
-            hillTimer->start();
+            m_hillTimer->start();
         } else {
             setY(y() + 3 * flag);
             emit moved();
         }
     });
-    toXTimer->start();
+    if (y() == point.y()) m_toXTimer->start(36 / ((speed() / 3)));
+    else if (!m_hillTimer->isActive()) m_toYTimer->start(36 / ((speed() / 3)));
+    else m_toXTimer->start(36 / ((speed() / 3)));
 }
 
 void Ghost::findRandomRoom(QVector<Room*>* room, int roomNum) {

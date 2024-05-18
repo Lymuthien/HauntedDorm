@@ -1,14 +1,19 @@
 #include "door.h"
+#include "qdebug.h"
 
 Door::Door(QPixmap pixmap, int *money, int *energy, QObject *parent) : Cage{pixmap, money, energy} {
     setType(DoorType);
     setMoneyCost(25);
 }
 
+Door::~Door() {
+    delete m_form;
+}
+
 bool Door::upgrade() {
     if (Cage::upgrade()) {
-        _maxHp *= 2;
-        _hp = _maxHp;
+        m_maxHp *= 2;
+        m_hp = m_maxHp;
         emit hpChanged();
     }
     return true;
@@ -16,26 +21,26 @@ bool Door::upgrade() {
 
 void Door::changePixmap(QPixmap pixmap) {
     _pixmap = pixmap;
-    this->update();
+     update();
 }
 
 void Door::clicked() {
-    if (_form == nullptr)
-        _form = new UpgrateForm(this);
-    _form->show();
+    if (m_form == nullptr)
+        m_form = new UpgrateForm(this);
+    m_form->show();
 }
 
-int Door::getMaxHp() {
-    return _maxHp;
+int Door::maxHp() {
+    return m_maxHp;
 }
 
-int Door::getHp() {
-    return _hp;
+int Door::hp() {
+    return m_hp;
 }
 
 void Door::setHp(int hp) {
-    _hp = hp;
-    if (_hp <= 0) {
+    m_hp = hp;
+    if (m_hp <= 0) {
         delete this;
         return;
     }

@@ -16,6 +16,7 @@ Room::Room(bool doorUp, QObject* parent)
     for (int i = 0; i < 14; ++i) {
         m_interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png"), &m_money, &m_energy));
         connect(m_interactFloor[i], &FloorCage::attackGhost, this, &Room::attackGhost);
+        connect(m_interactFloor[i], &FloorCage::addFunction, this, &Room::addFunction);
     }
 
     int roomNumber = QRandomGenerator::global()->bounded(1, 5);
@@ -39,28 +40,44 @@ Room::Room(bool doorUp, QObject* parent)
         m_interactFloor[i]->setVisible(false);
 
     addAllItems();
-    connect(m_door, &Door::destroyed, this, [=]() {m_door = nullptr; delete this;});
+    connect(m_door, &Door::destroyed, this, [=]() {
+        m_door = nullptr;
+        if (!m_deleted) delete this;
+    });
 }
 
 Room::~Room() {
-    delete m_openDoorTimer;
+    m_deleted = true;
+    m_closeDoorTimer->stop();
     delete m_closeDoorTimer;
+    m_openDoorTimer->stop();
+    delete m_openDoorTimer;
+    m_gameCycleTimer->stop();
+    delete m_gameCycleTimer;
+    m_botCycleTimer->stop();
+    delete m_botCycleTimer;
     delete m_sleepBtn;
+    for (int i = 0; i < m_interactBtns.count(); ++i)
+        delete m_interactBtns[i];
+    for (int i = 0; i < m_interactFloor.count(); ++i)
+        delete m_interactFloor[i];
     for (int i = 0; i < m_floor.count(); ++i)
         delete m_floor[i];
     for (int i = 0; i < m_walls.count(); ++i)
         delete m_walls[i];
-    for (int i = 0; i < m_interactBtns.count(); ++i)
-        delete m_interactBtns[i];
-    /*
-    delete _bed;
-    //delete _door;
+    delete m_bed;
+    delete m_door;
+}
 
-
-*/
-    /*
-    QVector<FloorCage*> _interactFloor;
-    Human* _human;*/
+void Room::addFunction(Cage::BuildingType _type) {
+    if (_type == Cage::HookahType)
+        ;
+    else if (_type == Cage::DotaType)
+        ;
+    else if (_type == Cage::HammerType)
+        ;
+    else if (_type == Cage::SixBybeType)
+        ;
 }
 
 void Room::attackGhost(FloorCage* _cage) {
@@ -110,7 +127,7 @@ void Room::showInteractingCages() {
         m_interactBtns[14+i]->show();
 }
 
-void Room::setHuman(Human* human) {
+void Room::setHuman(Human* human, bool bot) {
     m_human = human;
     m_human->setPos(x()+m_bed->x(), y()+m_bed->y());
     QGraphicsPixmapItem* h = new QGraphicsPixmapItem(m_human->getPixmap().scaled(50, 50));
@@ -118,7 +135,7 @@ void Room::setHuman(Human* human) {
     addToGroup(h);
     m_human->setPos(-57, -57);
     m_human->setInRoom();
-    m_botCycleTimer->start();
+    if (bot) m_botCycleTimer->start();
     m_gameCycleTimer->start();
     setFree(false);
 }
@@ -155,7 +172,7 @@ void Room::initBotCycle() {
 
 void Room::setFree(bool status) {
     m_free = status;
-    startClosingDoor();
+    if (!status) startClosingDoor();
 }
 
 bool Room::isFree() {

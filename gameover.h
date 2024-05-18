@@ -16,7 +16,7 @@ public:
     ~GameOver();
 
 signals:
-    void goToMenu();
+    void goToMenu(bool victory);
 
 private:
     Ui::GameOver *ui;

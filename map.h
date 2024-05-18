@@ -26,7 +26,6 @@ signals:
     void settingsBtnClicked();
     void btnClicked();
     void doorHitted();
-
     void gameOver(bool victory);
 
 private slots:
@@ -43,6 +42,7 @@ private:
     void initGhost();
     void attackGhost(QPointF pos, int dmg);
     void moveGhostHp();
+    void endGame();
     void removeRoom(Room *room);
     void setCoins(int money, int energy);
     void bulletLine(QGraphicsEllipseItem *&_bullet, QPointF _ghostPos, QTimer *_timer);

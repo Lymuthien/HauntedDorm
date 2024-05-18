@@ -9,12 +9,14 @@
 
 Room::Room(bool doorUp, QObject* parent)
     : QObject{parent}, QGraphicsItemGroup(), m_openDoorTimer(new QTimer(this))
-    , m_closeDoorTimer(new QTimer(this)), m_gameCycleTimer(new QTimer(this))
+    , m_closeDoorTimer(new QTimer(this)), m_gameCycleTimer(new QTimer(this)), m_botCycleTimer(new QTimer(this))
     , m_bed(new Bed(QPixmap(":/images/resourses/images/bed.png"), &m_money, &m_energy))
     , m_door(new Door(QPixmap(":/images/resourses/images/door.jpg"), &m_money, &m_energy))
 {
-    for (int i = 0; i < 14; ++i)
+    for (int i = 0; i < 14; ++i) {
         m_interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png"), &m_money, &m_energy));
+        connect(m_interactFloor[i], &FloorCage::attackGhost, this, &Room::attackGhost);
+    }
 
     int roomNumber = QRandomGenerator::global()->bounded(1, 5);
 
@@ -30,6 +32,8 @@ Room::Room(bool doorUp, QObject* parent)
 
     m_gameCycleTimer->setInterval(1000);
     connect(m_gameCycleTimer, &QTimer::timeout, this, &Room::initCycle);
+    m_botCycleTimer->setInterval(2000);
+    connect(m_botCycleTimer, &QTimer::timeout, this, &Room::initBotCycle);
 
     for (int i = 0; i < 14; ++i)
         m_interactFloor[i]->setVisible(false);
@@ -57,6 +61,10 @@ Room::~Room() {
     /*
     QVector<FloorCage*> _interactFloor;
     Human* _human;*/
+}
+
+void Room::attackGhost(FloorCage* _cage) {
+    emit attackGhostT(_cage->pos() + pos(), _cage->damagePerSec());
 }
 
 void Room::createSleepButton(QWidget* w) {
@@ -110,17 +118,39 @@ void Room::setHuman(Human* human) {
     addToGroup(h);
     m_human->setPos(-57, -57);
     m_human->setInRoom();
+    m_botCycleTimer->start();
     m_gameCycleTimer->start();
     setFree(false);
 }
 
 void Room::initCycle() {
     for (int i = 0; i < 14; ++i) {
-        m_money += m_interactFloor[i]->getMoneyPerSec();
-        m_energy += m_interactFloor[i]->getEnergyPerSec();
+        m_money += m_interactFloor[i]->moneyPerSec();
+        m_energy += m_interactFloor[i]->energyPerSec();
     }
-    m_money += m_bed->getMoneyPerSec();
+    m_money += m_bed->moneyPerSec();
     emit coinsChanged(m_money, m_energy);
+}
+
+void Room::initBotCycle() {
+    if (m_bed->level() == 0) m_bed->upgrade(); //26
+    if (m_bed->level() == 1) {
+        m_interactFloor[0]->setBuilding(Cage::ShellyType); // 8
+        m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
+        m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
+        m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
+    }
+    if (m_door->level() == 0) m_door->upgrade(); // 50
+    if (m_bed->level() == 1) m_bed->upgrade(); //52
+    if (m_interactFloor[0]->level() == 0) m_interactFloor[0]->upgrade();
+    if (m_interactFloor[1]->level() == 0) m_interactFloor[1]->upgrade();
+    if (m_door->level() == 1) m_door->upgrade(); // 100
+    if (m_bed->level() == 2) m_bed->upgrade(); //104
+    m_interactFloor[2]->setBuilding(Cage::Ps4Type); // 200
+    if (m_interactFloor[2]->getType() == Cage::Ps4Type) {
+        if (m_interactFloor[13]->level() == 0) m_interactFloor[13]->upgrade();
+        if (m_interactFloor[12]->level() == 0) m_interactFloor[12]->upgrade();
+    }
 }
 
 void Room::setFree(bool status) {

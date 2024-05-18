@@ -2,13 +2,16 @@
 
 Door::Door(QPixmap pixmap, int *money, int *energy, QObject *parent) : Cage{pixmap, money, energy} {
     setType(DoorType);
+    setMoneyCost(25);
 }
 
-void Door::upgrade() {
-    _maxHp *= 2;
-    _hp = _maxHp;
-    emit hpChanged();
-    Cage::upgrade();
+bool Door::upgrade() {
+    if (Cage::upgrade()) {
+        _maxHp *= 2;
+        _hp = _maxHp;
+        emit hpChanged();
+    }
+    return true;
 }
 
 void Door::changePixmap(QPixmap pixmap) {

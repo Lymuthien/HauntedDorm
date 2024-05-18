@@ -19,6 +19,16 @@ Cage::BuildingType Cage::getType() {
     return _type;
 }
 
+int Cage::level() {
+    return m_level;
+}
+
+void Cage::deleteBuilding() {
+    m_level = 0;
+    m_moneyCost = 0;
+    m_energyCost = 0;
+}
+
 QString Cage::getTypeString() {
     switch(_type) {
     case UninitializedType:
@@ -49,33 +59,36 @@ void Cage::setType(BuildingType type) {
     _type = type;
 }
 
-void Cage::upgrade() {
-    if (getCurrentMoney() >= getMoneyCost() * 2 && getCurrentEnergy() >= getEnergyCost() *  2) {
-        *m_currentMoney -= _moneyCost * 2;
-        *m_currentEnergy -= _energyCost * 2;
-        _moneyCost *= 2;
-        _energyCost *= 2;
+bool Cage::upgrade() {
+    if (currentMoney() >= moneyCost() * 2 && currentEnergy() >= energyCost() *  2) {
+        *m_currentMoney -= m_moneyCost * 2;
+        *m_currentEnergy -= m_energyCost * 2;
+        m_moneyCost *= 2;
+        m_energyCost *= 2;
+        m_level++;
+        return true;
     }
+    return false;
 }
 
 
-int Cage::getMoneyCost() {
-    return _moneyCost;
+int Cage::moneyCost() {
+    return m_moneyCost;
 }
 
 void Cage::setMoneyCost(int cost) {
-    _moneyCost = cost;
+    m_moneyCost = cost;
 }
 
-int Cage::getEnergyCost() {
-    return _energyCost;
+int Cage::energyCost() {
+    return m_energyCost;
 }
 
 void Cage::setEnergyCost(int cost) {
-    _energyCost = cost;
+    m_energyCost = cost;
 }
 
-int Cage::getCurrentMoney() {
+int Cage::currentMoney() {
     return *m_currentMoney;
 }
 
@@ -83,7 +96,7 @@ void Cage::setCurrentMoney(int _money) {
     *m_currentMoney = _money;
 }
 
-int Cage::getCurrentEnergy() {
+int Cage::currentEnergy() {
     return *m_currentEnergy;
 }
 

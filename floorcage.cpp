@@ -1,7 +1,11 @@
 #include "floorcage.h"
+#include <QTimer>
 
 FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
-    : Cage{pixmap, money, energy}, m_emptyPixmap(pixmap) {
+    : Cage{pixmap, money, energy}, m_attackTimer(new QTimer), m_emptyPixmap(pixmap)
+{
+    m_attackTimer->setInterval(1000);
+    connect(m_attackTimer, &QTimer::timeout, this, [=]() {emit attackGhost(this);});
     setType(UninitializedType);
 }
 
@@ -12,50 +16,52 @@ void FloorCage::setBuilding(BuildingType type) {
         deleteBuilding();
         return;
     case HookahType:
-        if (getCurrentEnergy() > 256) {
+        if (currentEnergy() > 256) {
             _pixmap = QPixmap(":/images/resourses/images/hookah.png");
-            setEnergyCost(getEnergyCost() + 256);
-            setCurrentEnergy(getCurrentEnergy() - 256);
+            setEnergyCost(energyCost() + 256);
+            setCurrentEnergy(currentEnergy() - 256);
             setType(type);
         }
         break;
     case ShellyType:
-        if (getCurrentMoney() > 8) {
+        if (currentMoney() > 8) {
             _pixmap = QPixmap(":/images/resourses/images/shelly.png");
-            setMoneyCost(getMoneyCost() + 8);
-            setCurrentMoney(getCurrentMoney() - 8);
+            m_damagePerSec = 1;
+            m_attackTimer->start();
+            setMoneyCost(moneyCost() + 8);
+            setCurrentMoney(currentMoney() - 8);
             setType(type);
         }
         break;
     case Ps4Type:
-        if (getCurrentMoney() > 200) {
+        if (currentMoney() > 200) {
             _pixmap = QPixmap(":/images/resourses/images/ps4.png");
-            setMoneyCost(getMoneyCost() + 200);
-            setCurrentMoney(getCurrentMoney() - 200);
+            setMoneyCost(moneyCost() + 200);
+            setCurrentMoney(currentMoney() - 200);
             setType(type);
         }
         break;
     case DotaType:
-        if (getCurrentEnergy() > 128) {
+        if (currentEnergy() > 128) {
             _pixmap = QPixmap(":/images/resourses/images/dota.png");
-            setEnergyCost(getEnergyCost() + 128);
-            setCurrentEnergy(getCurrentEnergy() - 128);
+            setEnergyCost(energyCost() + 128);
+            setCurrentEnergy(currentEnergy() - 128);
             setType(type);
         }
         break;
     case HammerType:
-        if (getCurrentEnergy() > 512) {
+        if (currentEnergy() > 512) {
             _pixmap = QPixmap(":/images/resourses/images/hammer.png");
-            setEnergyCost(getEnergyCost() + 512);
-            setCurrentEnergy(getCurrentEnergy() - 512);
+            setEnergyCost(energyCost() + 512);
+            setCurrentEnergy(currentEnergy() - 512);
             setType(type);
         }
         break;
     case SixBybeType:
-        if (getCurrentEnergy() > 1024) {
+        if (currentEnergy() > 1024) {
             _pixmap = QPixmap(":/images/resourses/images/6-bybe.png");
-            setEnergyCost(getEnergyCost() + 1024);
-            setCurrentEnergy(getCurrentEnergy() - 1024);
+            setEnergyCost(energyCost() + 1024);
+            setCurrentEnergy(currentEnergy() - 1024);
             setType(type);
         }
         break;
@@ -70,17 +76,17 @@ void FloorCage::setBuilding(BuildingType type) {
 }
 
 void FloorCage::deleteBuilding() {
+    if (m_attackTimer->isActive()) m_attackTimer->stop();
     m_moneyPerSec = 0;
     m_energyPerSec = 0;
-    setCurrentMoney(getCurrentMoney() + getMoneyCost() * 0.75);
-    setCurrentEnergy(getCurrentEnergy() + getEnergyCost() * 0.75);
-    setMoneyCost(0);
-    setEnergyCost(0);
+    setCurrentMoney(currentMoney() + moneyCost() * 0.75);
+    setCurrentEnergy(currentEnergy() + energyCost() * 0.75);
     _pixmap = m_emptyPixmap;
     update();
     setType(UninitializedType);
     setVisible(m_visible);
     m_free = true;
+    Cage::deleteBuilding();
 }
 
 void FloorCage::clicked() {
@@ -115,18 +121,24 @@ bool FloorCage::free() {
     return m_free;
 }
 
-void FloorCage::upgrade()
+bool FloorCage::upgrade()
 {
-    m_moneyPerSec *= 2;
-    m_energyPerSec *= 2;
-    Cage::upgrade();
-
+    if (Cage::upgrade()) {
+        m_moneyPerSec *= 2;
+        m_energyPerSec *= 2;
+        m_damagePerSec *= 2;
+    }
+    return true;
 }
 
-int FloorCage::getMoneyPerSec() {
+int FloorCage::moneyPerSec() {
     return m_moneyPerSec;
 }
 
-int FloorCage::getEnergyPerSec() {
+int FloorCage::energyPerSec() {
     return m_energyPerSec;
+}
+
+int FloorCage::damagePerSec() {
+    return m_damagePerSec;
 }

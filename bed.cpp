@@ -5,9 +5,10 @@ Bed::Bed(QPixmap pixmap, int* money, int* energy, QObject *parent) : Cage(pixmap
     setMoneyCost(13);
 }
 
-void Bed::upgrade() {
-    _moneyPerSec *= 2;
-    Cage::upgrade();
+bool Bed::upgrade() {
+    if (Cage::upgrade())
+        m_moneyPerSec *= 2;
+    return true;
 }
 
 void Bed::takeTheBed(QPixmap pixmap) {
@@ -16,11 +17,11 @@ void Bed::takeTheBed(QPixmap pixmap) {
 }
 
 void Bed::clicked() {
-    if (_form == nullptr)
-        _form = new UpgrateForm(this);
-    _form->show();
+    if (m_form == nullptr)
+        m_form = new UpgrateForm(this);
+    m_form->show();
 }
 
-int Bed::getMoneyPerSec() {
-    return _moneyPerSec;
+int Bed::moneyPerSec() {
+    return m_moneyPerSec;
 }

@@ -4,10 +4,11 @@
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
 #include <QTimer>
+#
 
 Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     : QWidget(parent), ui(new Ui::Map), m_skins(skins), m_humanAndDoorTimer(new QTimer(this))
-    , m_ghostAndDoorTimer(new QTimer(this)), m_scene(new QGraphicsScene)
+    , m_ghostAndDoorTimer(new QTimer(this)), m_bulletToGhostTimer(new QTimer(this)), m_scene(new QGraphicsScene)
 {    
     ui->setupUi(this);
     ui->graphicsView->setScene(m_scene);
@@ -27,6 +28,8 @@ Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
 
     m_ghostAndDoorTimer->setInterval(1000);
     connect(m_ghostAndDoorTimer, &QTimer::timeout, this, &Map::hitDoorInRoom);
+
+    m_bulletToGhostTimer->setInterval(50);
 
     m_human->setPos(57*15, 57*9);
     m_scene->addItem(m_human);
@@ -101,7 +104,33 @@ void Map::buildRooms() {
                 connect(room, &Room::destroyed, this, [=]() {emit gameOver(false); });
             });
             connect(room, &Room::destroyed, this, [=]() {removeRoom(room);});
+            connect(room, &Room::attackGhostT, this, &Map::attackGhost);
         }
+}
+
+void Map::attackGhost(QPointF pos, int dmg) {
+    if (QLineF(pos, m_ghost->pos()).length() < 57*6) {
+        m_ghost->setHp(m_ghost->getHp() - dmg);
+        QGraphicsEllipseItem* bullet = new QGraphicsEllipseItem(0, 0, 10, 10);
+        bullet->setPen(QPen(QColor(Qt::red)));
+        bullet->setPos(pos);
+        m_scene->addItem(bullet);
+        QTimer* bulletToGhostTimer = new QTimer();
+        bulletToGhostTimer->setInterval(50);
+        connect(bulletToGhostTimer, &QTimer::timeout, this, [this, bullet, bulletToGhostTimer]() mutable {bulletLine(bullet, m_ghost->pos(), bulletToGhostTimer);});
+        bulletToGhostTimer->start();
+    }
+}
+
+void Map::bulletLine(QGraphicsEllipseItem*& _bullet, QPointF _ghostPos, QTimer* _timer) {
+    if (QLineF(_bullet->pos(), _ghostPos).length() < 5 ) {
+        _timer->stop();
+        _timer->deleteLater();
+        delete _bullet;
+        _bullet = nullptr;
+        return;
+    }
+    _bullet->setPos((_bullet->pos() + _ghostPos) / 2);
 }
 
 void Map::removeRoom(Room* room) {
@@ -178,10 +207,13 @@ void Map::initGhost() {
     m_scene->addItem(m_ghost);
     m_ghost->setPos(57*11, 57*9);
     connect(m_ghost, &Ghost::moved, this, &Map::moveGhostHp);
+    connect(m_ghost, &Ghost::hpChanged, this, &Map::moveGhostHp);
     m_ghostAndDoorTimer->start();
 }
 
 void Map::moveGhostHp() {
+    ui->ghostHp->setValue(m_ghost->getHp());
+    ui->ghostHp->setMaximum(m_ghost->getMaxHp());
     ui->ghostHp->setGeometry(m_ghost->x(), m_ghost->y() - 16, 51, 14);
     ui->ghostHp->show();
 }

@@ -18,6 +18,7 @@ int Ghost::getHp() {
 
 void Ghost::setHp (int hp) {
     _hp = hp;
+    emit hpChanged();
 }
 
 int Ghost::getDamage() {
@@ -26,7 +27,7 @@ int Ghost::getDamage() {
 
 void Ghost::upgrade() {
     _maxHp *= 2;
-    _hp = _maxHp;
+    setHp(_maxHp);
     _damage *= 2;
     setSpeed(speed() + 3);
 }
@@ -42,6 +43,8 @@ void Ghost::goToHillZone() {
         else findRandomRoom(rooms);
         return;
     }
+    toXTimer->stop();
+    toYTimer->stop();
 
     if ((y() == _hillPoints[0].y()) && (x() == _hillPoints[0].x() || x() == _hillPoints[1].x())) {
         _hp += _maxHp * 0.1;
@@ -66,6 +69,7 @@ void Ghost::goToPoint(QPointF point) {
     int flag = 1;
     if (x()>point.x()) flag = -1;
     else flag = 1;
+    //if hilltimer !isactive
     connect(toXTimer, &QTimer::timeout, this, [=]() {
         if (x() == point.x()) {
             toXTimer->stop();

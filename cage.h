@@ -24,19 +24,21 @@ public:
     };
 
     QRectF boundingRect() const;
-    virtual void upgrade();
+    virtual bool upgrade();
+    virtual void deleteBuilding();
     BuildingType getType();
     void setType(BuildingType type);
     QString getTypeString();
     QPixmap getPixmap();
-    int getMoneyCost();
+    int moneyCost();
     void setMoneyCost(int cost);
-    int getEnergyCost();
+    int energyCost();
     void setEnergyCost(int cost);
-    int getCurrentMoney();
+    int currentMoney();
     void setCurrentMoney(int _money);
-    int getCurrentEnergy();
+    int currentEnergy();
     void setCurrentEnergy(int _energy);
+    int level();
 
 protected:
     QPixmap _pixmap;
@@ -44,8 +46,7 @@ protected:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*);
     BuildingType _type;
-    int _moneyCost = 0;
-    int _energyCost = 0;
+    int m_moneyCost = 0, m_energyCost = 0, m_level = 0;
     int* m_currentMoney = nullptr;
     int* m_currentEnergy = nullptr;
 };

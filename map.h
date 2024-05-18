@@ -41,9 +41,11 @@ private:
     void hitDoorInRoom();
     void initHumanBots();
     void initGhost();
+    void attackGhost(QPointF pos, int dmg);
     void moveGhostHp();
     void removeRoom(Room *room);
     void setCoins(int money, int energy);
+    void bulletLine(QGraphicsEllipseItem *&_bullet, QPointF _ghostPos, QTimer *_timer);
 
     Ui::Map *ui;
     
@@ -55,6 +57,7 @@ private:
     QPixmap* m_skins;
     QTimer* m_humanAndDoorTimer;
     QTimer* m_ghostAndDoorTimer;
+    QTimer* m_bulletToGhostTimer;
     QVector<QPoint> m_ghostHillZone;
     QGraphicsScene* m_scene;
     QVector<Cage*> m_walls;

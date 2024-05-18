@@ -21,6 +21,7 @@ public:
 
 signals:
     void moved();
+    void hpChanged();
 
 private:
     void goToHillZone();

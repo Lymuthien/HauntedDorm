@@ -33,6 +33,7 @@ public:
 signals:
     void sleepBtnClicked();
     void coinsChanged(int money, int energy);
+    void attackGhostT(QPointF pos, int dmg);
 
 private:
     void moveDoor(bool open);
@@ -40,12 +41,14 @@ private:
     void setDoorCoordinates(bool doorUp, QPointF pos1, QPointF pos2);
     void addFloor(int maxI, int maxJ);
     void addAllItems();
+    void attackGhost(FloorCage *_cage);
     void showInteractingCages();
     void buildRoom1(bool doorUp, int flag = 0);
     void buildRoom2(bool doorUp, int flag = 0);
     void buildRoom3(bool doorUp, int flag = 0);
     void buildRoom4(bool doorUp, int flag = 0);
     void initCycle();
+    void initBotCycle();
 
     bool m_free = true;
     int m_money = 0, m_energy = 0, m_wallCount = 0;
@@ -53,6 +56,7 @@ private:
     QTimer* m_openDoorTimer;
     QTimer* m_closeDoorTimer;
     QTimer* m_gameCycleTimer;
+    QTimer* m_botCycleTimer;
     QPushButton* m_sleepBtn;
     QVector<QPushButton*> m_interactBtns;
     QVector<FloorCage*> m_interactFloor;

@@ -22,7 +22,7 @@ void UpgrateForm::updateText() {
         ui->label->hide();
     }
     else {
-        ui->upgradeBtn->setText(QString::number(m_cage->getMoneyCost() * 2) + "m, " + QString::number(m_cage->getEnergyCost() * 2) + "e");
+        ui->upgradeBtn->setText(QString::number(m_cage->moneyCost() * 2) + "m, " + QString::number(m_cage->energyCost() * 2) + "e");
         ui->upgradeBtn->show();
         ui->label->show();
     }
@@ -32,7 +32,7 @@ void UpgrateForm::updateText() {
         ui->label_3->hide();
     }
     else
-        ui->sellBtn->setText(QString::number(m_cage->getMoneyCost() * 0.75) + "m, " + QString::number(m_cage->getEnergyCost() * 0.75) + "e");
+        ui->sellBtn->setText(QString::number(m_cage->moneyCost() * 0.75) + "m, " + QString::number(m_cage->energyCost() * 0.75) + "e");
 }
 
 
@@ -49,6 +49,7 @@ void UpgrateForm::on_upgradeBtn_clicked()
 }
 
 void UpgrateForm::on_sellBtn_clicked() {
-    //m_cage->
+    m_cage->deleteBuilding();
+    hide();
 }
 

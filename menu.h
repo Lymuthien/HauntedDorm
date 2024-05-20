@@ -39,6 +39,8 @@ private slots:
     void on_skin3Btn_clicked();
     void on_skin4Btn_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::Menu *ui;
     QPixmap* m_skins;

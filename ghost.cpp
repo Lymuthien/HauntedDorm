@@ -38,6 +38,7 @@ void Ghost::upgrade() {
     m_maxHp *= 2;
     setHp(m_maxHp);
     m_damage *= 2;
+    setSpeed(speed() + 3);
 }
 
 int Ghost::maxHp() {
@@ -89,7 +90,6 @@ void Ghost::goToPoint(QPointF point) {
     int flag = 1;
     if (x()>point.x()) flag = -1;
     else flag = 1;
-    //if hilltimer !isactive
     connect(m_toXTimer, &QTimer::timeout, this, [=]() {
         if (x() == point.x()) {
             m_toXTimer->stop();
@@ -105,7 +105,6 @@ void Ghost::goToPoint(QPointF point) {
         if (y() == point.y()) {
             m_toYTimer->stop();
             goToPoint(QPointF(x(), 57*9));
-            m_hillTimer->start();
         } else {
             setY(y() + 3 * flag);
             emit moved();

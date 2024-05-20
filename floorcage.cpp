@@ -52,7 +52,7 @@ void FloorCage::setBuilding(BuildingType type) {
         break;
     case DotaType:
         if (currentEnergy() > 128) {
-            _pixmap = QPixmap(":/images/resourses/images/dota.png");
+            _pixmap = QPixmap(":/images/resourses/images/dota2.png");
             setEnergyCost(energyCost() + 128);
             setCurrentEnergy(currentEnergy() - 128);
             setType(type);
@@ -103,6 +103,8 @@ void FloorCage::deleteBuilding() {
 }
 
 void FloorCage::clicked() {
+    if (getType() == HookahType || getType() == DotaType || getType() == HammerType || getType() == SixBybeType)
+        return;
     if (getType() == UninitializedType) {
         if (m_form == nullptr) {
             m_form = new AddBuildingForm(this);

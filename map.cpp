@@ -4,12 +4,16 @@
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
 #include <QTimer>
-#
+#include <bits/stdc++.h>
+const int RUN = 32;
 
 Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
-    : QWidget(parent), ui(new Ui::Map), m_skins(skins), m_humanAndDoorTimer(new QTimer(this))
-    , m_ghostAndDoorTimer(new QTimer(this)), m_bulletToGhostTimer(new QTimer(this)), m_scene(new QGraphicsScene)
-    , m_human(new Human(skin))
+    : QWidget(parent), ui(new Ui::Map)
+    , m_human(new Human(skin)), m_skins(skins)
+    , m_humanAndDoorTimer(new QTimer(this))
+    , m_ghostAndDoorTimer(new QTimer(this))
+    , m_bulletToGhostTimer(new QTimer(this))
+    , m_scene(new QGraphicsScene)
 {    
     ui->setupUi(this);
     ui->graphicsView->setScene(m_scene);
@@ -24,8 +28,10 @@ Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     m_humanAndDoorTimer->setInterval(200);
     connect(m_humanAndDoorTimer, &QTimer::timeout, this, &Map::openDoorInRoom);
     m_humanAndDoorTimer->start();
+
     m_ghostAndDoorTimer->setInterval(1000);
     connect(m_ghostAndDoorTimer, &QTimer::timeout, this, &Map::hitDoorInRoom);
+
     m_bulletToGhostTimer->setInterval(50);
     ui->timeBeforeGhost->setTime(ui->timeBeforeGhost->time().addSecs(-1));
 
@@ -101,7 +107,9 @@ void Map::buildRooms() {
                 ui->doorHp->show();
                 connect(room, &Room::coinsChanged, this, &Map::setCoins);
                 connect(room->door(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(room->door()->hp());} );
-                connect(room, &Room::destroyed, this, [=]() {emit gameOver(false); });
+                connect(room, &Room::destroyed, this, [=]() {this->close();emit gameOver(false); });
+                connect(room, &Room::ghostM25, this, [=]() {m_ghost->setSpeed(m_ghost->speed()*0.5);});
+                connect(room, &Room::ghostAtt1, this, [=]() { m_ghost->setHp(m_ghost->hp()*0.99); });
             });
             connect(room, &Room::destroyed, this, [=]() {removeRoom(room);});
             connect(room, &Room::attackGhostT, this, &Map::attackGhost);
@@ -171,6 +179,10 @@ void Map::setCoins(int money, int energy) {
 void Map::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
+
+    if (key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Left || key == Qt::Key_Right)
+        return;
+
     int speedPer200ms = m_human->speed() / 5;
 
     if (key == Qt::Key_W)
@@ -192,7 +204,6 @@ void Map::keyPressEvent(QKeyEvent* event)
 }
 
 void Map::openDoorInRoom() {
-    emit gameOver(true);
     for (int i = 0; i < m_rooms.count(); ++i) {
         if (m_rooms[i]->door()==nullptr) continue;
         if (m_rooms[i]->isFree()) {
@@ -250,4 +261,9 @@ void Map::on_gameTime_timeChanged(const QTime &time)
     QTimer* t = new QTimer();
     connect(t, &QTimer::timeout, this, [=]() { ui->gameTime->setTime(time.addSecs(1)); t->stop(); delete t;});
     t->start(1000);
+}
+
+void Map::on_pushButton_clicked()
+{
+    emit gameOver(false);
 }

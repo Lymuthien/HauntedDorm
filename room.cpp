@@ -71,11 +71,11 @@ Room::~Room() {
 
 void Room::addFunction(Cage::BuildingType _type) {
     if (_type == Cage::HookahType)
-        ;
+        emit ghostM25();
     else if (_type == Cage::DotaType)
-        ;
+        emit ghostM25();
     else if (_type == Cage::HammerType)
-        ;
+        emit ghostAtt1();
     else if (_type == Cage::SixBybeType)
         ;
 }
@@ -150,23 +150,27 @@ void Room::initCycle() {
 }
 
 void Room::initBotCycle() {
-    if (m_bed->level() == 0) m_bed->upgrade(); //26
-    if (m_bed->level() == 1) {
-        m_interactFloor[0]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
+    for (int i = 0; i < 5; ++i) {
+        if (m_bed->level() == i) m_bed->upgrade(); //26
+        if (m_bed->level() == 1) {
+            m_interactFloor[0]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
+        }
+        if (m_door->level() == i) m_door->upgrade(); // 50
+        if (m_bed->level() == i + 1) m_bed->upgrade(); //52
+        if (m_interactFloor[0]->level() == i) m_interactFloor[0]->upgrade();
+        if (m_interactFloor[1]->level() == i) m_interactFloor[1]->upgrade();
+        if (m_door->level() == i + 1) m_door->upgrade(); // 100
+        if (m_bed->level() == i + 2) m_bed->upgrade(); //104
+        m_interactFloor[i + 2]->setBuilding(Cage::Ps4Type); // 200
+        if (m_interactFloor[i + 2]->getType() == Cage::Ps4Type) {
+            if (m_interactFloor[13]->level() == i) m_interactFloor[13]->upgrade();
+            if (m_interactFloor[12]->level() == i) m_interactFloor[12]->upgrade();
+            int n = QRandomGenerator::global()->bounded(4);
+            m_interactFloor[11 - i]->setBuilding(Cage::BuildingType(n));
     }
-    if (m_door->level() == 0) m_door->upgrade(); // 50
-    if (m_bed->level() == 1) m_bed->upgrade(); //52
-    if (m_interactFloor[0]->level() == 0) m_interactFloor[0]->upgrade();
-    if (m_interactFloor[1]->level() == 0) m_interactFloor[1]->upgrade();
-    if (m_door->level() == 1) m_door->upgrade(); // 100
-    if (m_bed->level() == 2) m_bed->upgrade(); //104
-    m_interactFloor[2]->setBuilding(Cage::Ps4Type); // 200
-    if (m_interactFloor[2]->getType() == Cage::Ps4Type) {
-        if (m_interactFloor[13]->level() == 0) m_interactFloor[13]->upgrade();
-        if (m_interactFloor[12]->level() == 0) m_interactFloor[12]->upgrade();
     }
 }
 

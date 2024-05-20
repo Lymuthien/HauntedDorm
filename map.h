@@ -33,6 +33,8 @@ private slots:
     void on_timeBeforeGhost_timeChanged(const QTime &time);
     void on_gameTime_timeChanged(const QTime &time);
 
+    void on_pushButton_clicked();
+
 private:
     void buildWalls();
     void buildRooms();

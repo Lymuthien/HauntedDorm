@@ -34,6 +34,8 @@ signals:
     void sleepBtnClicked();
     void coinsChanged(int money, int energy);
     void attackGhostT(QPointF pos, int dmg);
+    void ghostM25();
+    void ghostAtt1();
 
 private:
     void moveDoor(bool open);

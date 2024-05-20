@@ -28,6 +28,7 @@ private:
     void showSettings();
     void setGameOver(bool victory);
     void readCache();
+    void saveCache();
 
     MainWindow* m_window;
     QMediaPlayer m_music;

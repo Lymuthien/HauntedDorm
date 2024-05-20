@@ -605,6 +605,23 @@ color: black</string>
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>970</y>
+     <width>111</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px black;
+border-radius: 12px;</string>
+   </property>
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

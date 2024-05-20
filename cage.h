@@ -12,15 +12,15 @@ public:
     explicit Cage(const QPixmap pixmap, int* _currentMoney = nullptr, int* _currentEnergy = nullptr, QObject *parent = nullptr);
 
     enum BuildingType {
+        HookahType,
+        DotaType,
+        HammerType,
+        SixBybeType,
         UninitializedType,
         DoorType,
         BedType,
-        HookahType,
         ShellyType,
-        Ps4Type,
-        DotaType,
-        HammerType,
-        SixBybeType
+        Ps4Type
     };
     BuildingType getType();
 

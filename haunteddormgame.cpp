@@ -9,12 +9,10 @@
 #include <QUrl>
 #include <QCoreApplication>
 #include <QFile>
-#include <QDebug>
 
 #define KEY "fdkfg68d54v"
-
 HauntedDormGame::HauntedDormGame(QObject *parent)
-    : QObject{parent}, m_window(new MainWindow), m_menu(new Menu(m_skins, m_skinsCode))
+    : QObject{parent}, m_window(new MainWindow), m_menu(new Menu(m_skins, m_skinsCode, &m_coins))
 {
     readCache();
 
@@ -31,38 +29,79 @@ HauntedDormGame::HauntedDormGame(QObject *parent)
     m_sound[2].setSource(QUrl::fromUserInput("qrc:/sounds/resourses/music/quite-pressing.wav"));
 
     m_menu->setCoinsLabel(QString::number(m_coins));
+    connect(m_menu, &Menu::destroyed, this, &HauntedDormGame::saveCache);
     connect(m_menu, &Menu::destroyed, m_window, &MainWindow::close);
     connect(m_menu, &Menu::settingsBtnClicked, this, &HauntedDormGame::showSettings);
     connect(m_menu, &Menu::startBtnClicked, this, &HauntedDormGame::startGame);
     connect(m_menu, &Menu::btnClicked, this, [=]() {playSound(0);});
 }
 
-void HauntedDormGame::readCache() {
+void HauntedDormGame::readCache()
+{
     QFile cache("cache.txt");
     if (!cache.open(QIODevice::ReadOnly | QIODevice::Text)) return;
     QTextStream in(&cache);
+/*
     QStringList settingsCache = in.readLine().split(" ");
     for (int i = 0; i < 3; ++i)
         m_settings[i] = settingsCache[i].toInt() ^ KEY[i % 11];
+
     m_coins = in.readLine().toInt() ^ KEY[0];
+
     int skinNum = in.readLine().toInt() ^ KEY[0];
     m_menu->setSkin(m_skins[skinNum]);
+
+    QStringList skinsCache = in.readLine().split(" ");
+    for (int i = 0; i < 12; ++i)
+        m_skinsCode[i] = skinsCache[i].toInt() ^ KEY[i % 11];
+    m_menu->updateBtnText();*/
+    QStringList settingsCache = in.readLine().split(" ");
+    for (int i = 0; i < 3; ++i)
+        m_settings[i] = xorEncrypt(settingsCache[i]).toInt();
+
+    m_coins = xorEncrypt(in.readLine()).toInt();
+
+    int skinNum = xorEncrypt(in.readLine()).toInt();
+    m_menu->setSkin(m_skins[skinNum]);
+
+    QStringList skinsCache = in.readLine().split(" ");
+    for (int i = 0; i < 12; ++i)
+        m_skinsCode[i] = xorEncrypt(skinsCache[i]).toInt();
+    m_menu->updateBtnText();
+
     cache.close();
 }
 
-void HauntedDormGame::saveCache() {
+QString HauntedDormGame::xorEncrypt(QString str)
+{
+    QString result;
+    QString key = "fdkfg68d54v";
+    int keyLength = key.length();
+    for (int i = 0; i < str.length(); ++i)
+    {
+        QChar char1 = str.at(i);
+        QChar char2 = key.at(i % keyLength);
+        QChar encryptedChar = QChar(char1.unicode() ^ char2.unicode());
+        result += encryptedChar;
+    }
+    return result;
+};
+
+void HauntedDormGame::saveCache()
+{
     QFile cache("cache.txt");
     cache.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&cache);
     for (int i = 0; i < 3; ++i)
-        out << (m_settings[i] ^ KEY[i % 11]) << ' ';
-    out <<'\n' ;
-    out << (m_coins ^ KEY[0]) << '\n';
+        out << xorEncrypt(QString::number(m_settings[i])) << ' ';
+    out << '\n' << xorEncrypt(QString::number(m_coins)) << '\n';
     for (int i = 0; i < 12; ++i)
         if (m_skins[i] == m_menu->getSkin()) {
-            out << (i ^ KEY[0]);
-            return;
+            out << xorEncrypt(QString::number(i)) << '\n';
+            break;
         }
+    for (int i = 0; i < 12; ++i)
+        out << xorEncrypt(QString::number(m_skinsCode[i])) << ' ';
     cache.close();
 }
 

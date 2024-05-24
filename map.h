@@ -45,6 +45,7 @@ private:
     void attackGhost(QPointF pos, int dmg);
     void moveGhostHp();
     void endGame();
+    long* rand(int n, int max);
     void removeRoom(Room *room);
     void setCoins(int money, int energy);
     void bulletLine(QGraphicsEllipseItem *&_bullet, QPointF _ghostPos, QTimer *_timer);

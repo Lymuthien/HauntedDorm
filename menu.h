@@ -12,10 +12,11 @@ class Menu : public QWidget
     Q_OBJECT
 
 public:
-    explicit Menu(QPixmap *skins, bool* skinsCode, QWidget *parent = nullptr);
+    explicit Menu(QPixmap *skins, bool* skinsCode, int *coins, QWidget *parent = nullptr);
     ~Menu();
 
     void setCoinsLabel(QString str);
+    void updateBtnText();
     void setSkin(QPixmap skin);
     QPixmap getSkin();
 
@@ -42,9 +43,10 @@ private slots:
     void on_pushButton_clicked();
 
 private:
+
     Ui::Menu *ui;
     QPixmap* m_skins;
-    int m_coins;
+    int* m_coins;
     bool* m_skinsCode;
 };
 

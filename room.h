@@ -52,6 +52,8 @@ private:
     void buildRoom4(bool doorUp, int flag = 0);
     void initCycle();
     void initBotCycle();
+    int findClosest(QVector<FloorCage*> arr, int y);
+
 
     bool m_free = true, m_deleted = false;
     int m_money = 0, m_energy = 0, m_wallCount = 0;

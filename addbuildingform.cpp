@@ -2,8 +2,12 @@
 #include "ui_addbuildingform.h"
 
 AddBuildingForm::AddBuildingForm(Cage* cage, QWidget *parent)
-    : QWidget(parent), ui(new Ui::AddBuildingForm), m_cage(cage){
+    : QWidget(parent)
+    , ui(new Ui::AddBuildingForm)
+    , m_cage(cage)
+{
     ui->setupUi(this);
+
     setFixedSize(this->size());
     setWindowTitle("Добавить здание");
     setWindowFlags((this->windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);

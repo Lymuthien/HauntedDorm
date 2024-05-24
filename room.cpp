@@ -150,10 +150,11 @@ void Room::initCycle() {
 }
 
 void Room::initBotCycle() {
+    int a = findClosest(m_interactFloor, m_bed->y());
     for (int i = 0; i < 5; ++i) {
         if (m_bed->level() == i) m_bed->upgrade(); //26
         if (m_bed->level() == 1) {
-            m_interactFloor[0]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[a]->setBuilding(Cage::ShellyType); // 8
             m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
             m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
             m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
@@ -173,6 +174,30 @@ void Room::initBotCycle() {
     }
     }
 }
+
+int Room::findClosest(QVector<FloorCage*> arr, int y) {
+    int left = 0, right = arr.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid]->y() == y) {
+            return mid;
+        } else if (arr[mid]->y() < y) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    if (right < 0) {
+        return 0;
+    } else if (left >= static_cast<int>(arr.size())) {
+        return arr.size()-1;
+    } else {
+        return std::abs(arr[left]->y() - y) < std::abs(arr[right]->y() - y) ? left : right;
+    }
+}
+
 
 void Room::setFree(bool status) {
     m_free = status;

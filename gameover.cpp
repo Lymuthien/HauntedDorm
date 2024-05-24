@@ -10,12 +10,15 @@ GameOver::GameOver(bool victory, QWidget *parent)
     this->setWindowTitle(" ");
     this->setWindowFlags((this->windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowMaximizeButtonHint);
 
-    if (victory) {
+    if (victory)
+    {
         ui->loseLbl->hide();
         ui->gameOverLbl->setStyleSheet("color: #a7db81;");
         ui->pushButton->setStyleSheet("background: rgba(167, 219, 129, 0.5);"
                                       "color: black;");
-    } else {
+    }
+    else
+    {
         ui->victoryLbl->hide();
         ui->gameOverLbl->setStyleSheet("color: rgb(156, 138, 141);");
     }

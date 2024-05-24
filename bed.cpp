@@ -1,7 +1,8 @@
 #include "bed.h"
-#include "qdebug.h"
 
-Bed::Bed(QPixmap pixmap, int* money, int* energy, QObject *parent) : Cage(pixmap, money, energy) {
+Bed::Bed(QPixmap pixmap, int* money, int* energy, QObject *parent)
+    : Cage(pixmap, money, energy)
+{
     setType(BedType);
     setMoneyCost(13);
 }
@@ -18,7 +19,7 @@ bool Bed::upgrade() {
 
 void Bed::takeTheBed(QPixmap pixmap) {
     _pixmap = pixmap;
-    this->update();
+    update();
 }
 
 void Bed::clicked() {

@@ -29,8 +29,16 @@ signals:
 private:
     void goToHillZone();
     void goToPoint(QPointF point);
+    void heapify(QVector<Room*> roms, int n, int i);
+    void heapSort(QVector<Room*> roms, int n);
 
-    int m_hp = 512, m_maxHp = 512, m_damage = 4, m_hitCount = 0;
+    struct Edge {
+        int source, destination, weight;
+        Edge(int s, int d, int w) : source(s), destination(d), weight(w) {}
+    };
+    QVector<int> bellmanFord(QVector<Edge>&edges, int numVertices, int source);
+
+    int m_hp = 12, m_maxHp = 12, m_damage = 4, m_hitCount = 0;
     QTimer* m_hillTimer;
     QVector<QPoint> m_hillPoints;
     QTimer* m_toXTimer = nullptr;

@@ -1,22 +1,26 @@
 #include "floorcage.h"
-#include "qdebug.h"
 #include <QTimer>
 
 FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
-    : Cage{pixmap, money, energy}, m_attackTimer(new QTimer), m_emptyPixmap(pixmap) {
+    : Cage{pixmap, money, energy}
+    , m_attackTimer(new QTimer)
+    , m_emptyPixmap(pixmap)
+{
     m_attackTimer->setInterval(1000);
     connect(m_attackTimer, &QTimer::timeout, this, [=]() {emit attackGhost(this);});
     setType(UninitializedType);
 }
 
-FloorCage::~FloorCage() {
+FloorCage::~FloorCage()
+{
     m_attackTimer->stop();
     delete m_attackTimer;
     delete m_form;
     delete m_upgradeForm;
 }
 
-void FloorCage::setBuilding(BuildingType type) {
+void FloorCage::setBuilding(BuildingType type)
+{
     if (getType() != UninitializedType && type != UninitializedType) return;
 
     switch (type) {
@@ -87,43 +91,51 @@ void FloorCage::setBuilding(BuildingType type) {
     show();
 }
 
-void FloorCage::deleteBuilding() {
-    if (m_attackTimer->isActive()) m_attackTimer->stop();
+void FloorCage::deleteBuilding()
+{
+    if (m_attackTimer->isActive())
+        m_attackTimer->stop();
     m_moneyPerSec = 0;
     m_energyPerSec = 0;
     m_attackTimer->stop();
     setCurrentMoney(currentMoney() + moneyCost() * 0.75);
     setCurrentEnergy(currentEnergy() + energyCost() * 0.75);
     _pixmap = m_emptyPixmap;
-    update();
     setType(UninitializedType);
     setVisible(m_visible);
     m_free = true;
+    update();
     Cage::deleteBuilding();
 }
 
-void FloorCage::clicked() {
+void FloorCage::clicked()
+{
     if (getType() == HookahType || getType() == DotaType || getType() == HammerType || getType() == SixBybeType)
         return;
-    if (getType() == UninitializedType) {
-        if (m_form == nullptr) {
+    if (getType() == UninitializedType)
+    {
+        if (m_form == nullptr)
+        {
             m_form = new AddBuildingForm(this);
             connect(m_form, &AddBuildingForm::addBuilding, this, &FloorCage::setBuilding);
         }
         m_form->show();
     }
-    else {
+    else
+    {
         if (m_upgradeForm == nullptr)
             m_upgradeForm = new UpgrateForm(this);
         m_upgradeForm->show();
     }
 }
 
-bool FloorCage::visible() {
+bool FloorCage::visible()
+{
     return m_visible;
 }
 
-void FloorCage::setVisible(bool visible) {
+void FloorCage::setVisible(bool visible)
+{
     if (visible)
         show();
     else
@@ -131,13 +143,15 @@ void FloorCage::setVisible(bool visible) {
     m_visible = visible;
 }
 
-bool FloorCage::free() {
+bool FloorCage::free()
+{
     return m_free;
 }
 
 bool FloorCage::upgrade()
 {
-    if (Cage::upgrade()) {
+    if (Cage::upgrade())
+    {
         m_moneyPerSec *= 2;
         m_energyPerSec *= 2;
         m_damagePerSec *= 2;
@@ -145,14 +159,17 @@ bool FloorCage::upgrade()
     return true;
 }
 
-int FloorCage::moneyPerSec() {
+int FloorCage::moneyPerSec()
+{
     return m_moneyPerSec;
 }
 
-int FloorCage::energyPerSec() {
+int FloorCage::energyPerSec()
+{
     return m_energyPerSec;
 }
 
-int FloorCage::damagePerSec() {
+int FloorCage::damagePerSec()
+{
     return m_damagePerSec;
 }

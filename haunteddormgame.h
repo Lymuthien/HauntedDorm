@@ -29,6 +29,7 @@ private:
     void setGameOver(bool victory);
     void readCache();
     void saveCache();
+    QString xorEncrypt(QString str);
 
     MainWindow* m_window;
     QMediaPlayer m_music;

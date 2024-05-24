@@ -5,7 +5,6 @@
 #include <QRandomGenerator>
 #include <QTimer>
 #include <bits/stdc++.h>
-const int RUN = 32;
 
 Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     : QWidget(parent), ui(new Ui::Map)
@@ -123,8 +122,9 @@ void Map::removeRoom(Room* room) {
 }
 
 void Map::initHumanBots() {
+    long* nums = rand(3, 8);
     for(int i = 0; i < 3; ++i) {
-        int skin = QRandomGenerator::global()->bounded(8);
+        int skin = nums[i];
         m_humanBots.append(new Human(m_skins[skin]));
         m_humanBots[i]->setPos(57*15, 57*9);
         m_scene->addItem(m_humanBots[i]);
@@ -239,10 +239,29 @@ void Map::moveGhostHp() {
     ui->ghostHp->show();
 }
 
+long* Map::rand(int n, int max) {
+    int x0 = std::time(nullptr);
+    long m = 4294967296;
+    int a = 214013;
+    int c = 2531011;
+    long* nums = new long[n];
+    nums[0] = x0;
+    for (int i = 1; i < n; ++i) {
+        nums[i] = (nums[i-1] * a + c);
+        nums[i] %= m;
+    }
+    for (int i = 0; i < n; ++i)
+        nums[i] %= max;
+    return nums;
+}
+
 void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
 {
     if (!time.second()) {
-        if (!m_human->isInRoom()) emit gameOver(false);
+        if (!m_human->isInRoom()) {
+            emit gameOver(false);
+            return;
+        }
         initGhost();
         ui->gameTime->show();
         ui->timeBeforeGhost->hide();
@@ -258,6 +277,7 @@ void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
 
 void Map::on_gameTime_timeChanged(const QTime &time)
 {
+    if (m_ghost->hp() <= 0) emit gameOver(true);
     QTimer* t = new QTimer();
     connect(t, &QTimer::timeout, this, [=]() { ui->gameTime->setTime(time.addSecs(1)); t->stop(); delete t;});
     t->start(1000);

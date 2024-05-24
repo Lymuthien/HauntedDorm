@@ -4,19 +4,21 @@
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
 #include <QTimer>
-#
+#include <bits/stdc++.h>
 
 Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
-    : QWidget(parent), ui(new Ui::Map), m_skins(skins), m_humanAndDoorTimer(new QTimer(this))
-    , m_ghostAndDoorTimer(new QTimer(this)), m_bulletToGhostTimer(new QTimer(this)), m_scene(new QGraphicsScene)
+    : QWidget(parent), ui(new Ui::Map)
+    , m_human(new Human(skin)), m_skins(skins)
+    , m_humanAndDoorTimer(new QTimer(this))
+    , m_ghostAndDoorTimer(new QTimer(this))
+    , m_bulletToGhostTimer(new QTimer(this))
+    , m_scene(new QGraphicsScene)
 {    
     ui->setupUi(this);
     ui->graphicsView->setScene(m_scene);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    m_human = new Human(skin);
 
     buildWalls();
     buildRooms();
@@ -30,11 +32,10 @@ Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     connect(m_ghostAndDoorTimer, &QTimer::timeout, this, &Map::hitDoorInRoom);
 
     m_bulletToGhostTimer->setInterval(50);
+    ui->timeBeforeGhost->setTime(ui->timeBeforeGhost->time().addSecs(-1));
 
     m_human->setPos(57*15, 57*9);
     m_scene->addItem(m_human);
-
-    ui->timeBeforeGhost->setTime(ui->timeBeforeGhost->time().addSecs(-1));
 
     connect(ui->settingsBtn, &QPushButton::clicked, this, &Map::settingsBtnClicked);
     connect(ui->settingsBtn, &QPushButton::clicked, this, &Map::btnClicked);
@@ -42,6 +43,24 @@ Map::Map(QPixmap skin, QPixmap* skins, QWidget *parent)
     ui->gameTime->hide();
     ui->doorHp->hide();
     ui->ghostHp->hide();
+}
+
+Map::~Map() {
+    for (int i = 0; i < m_rooms.count();)
+        delete m_rooms[i];
+    delete m_human;
+    m_humanAndDoorTimer->stop();
+    delete m_humanAndDoorTimer;
+    m_ghostAndDoorTimer->stop();
+    delete m_ghostAndDoorTimer;
+    m_bulletToGhostTimer->stop();
+    delete m_bulletToGhostTimer;
+    for (int i = 0; i < m_walls.count(); ++i)
+        delete m_walls[i];
+    for (int i = 0; i < m_humanBots.count(); ++i)
+        delete m_humanBots[i];
+    delete m_scene;
+    delete ui;
 }
 
 void Map::buildWalls() {
@@ -68,20 +87,6 @@ void Map::buildWalls() {
         m_scene->addItem(m_walls[i]);
 }
 
-void Map::initHumanBots() {
-    for(int i = 0; i < 3; ++i) {
-        int skin = QRandomGenerator::global()->bounded(4);
-        m_humanBots.append(new Human(m_skins[skin]));
-        m_humanBots[i]->setPos(57*15, 57*9);
-        m_scene->addItem(m_humanBots[i]);
-        int roomNum = QRandomGenerator::global()->bounded(0, 2) + i * 2;
-        connect(m_humanBots[i], &Human::nearTheBed, this, [=]() { m_rooms[roomNum]->setHuman(m_humanBots[i]); });
-        connect(m_humanBots[i], &Human::nearTheDoor, this, [=]() { m_rooms[roomNum]->startOpeningDoor(); });
-        m_humanBots[i]->moveToBed(m_rooms[roomNum]->door()->pos() + m_rooms[roomNum]->pos(),
-                                  m_rooms[roomNum]->bed()->pos() + m_rooms[roomNum]->pos());
-    }
-}
-
 void Map::buildRooms() {
     for (int i = 0; i < 2; ++i)
         for (int j = 0; j < 3; ++j) {
@@ -94,23 +99,46 @@ void Map::buildRooms() {
             room->createSleepButton(this);
             connect(room, &Room::sleepBtnClicked, this, [=]() {
                 m_human->setPos(57*15, 57*9);
-                room->setHuman(m_human);
+                room->setHuman(m_human, false);
                 ui->doorHp->setGeometry(room->door()->x() + room->x() + 3,
                                         room->door()->y() + room->y() - 16, 51, 14);
-                ui->doorHp->setMaximum(room->door()->getMaxHp());
+                ui->doorHp->setMaximum(room->door()->maxHp());
                 ui->doorHp->show();
                 connect(room, &Room::coinsChanged, this, &Map::setCoins);
-                connect(room->door(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(room->door()->getHp());} );
-                connect(room, &Room::destroyed, this, [=]() {emit gameOver(false); });
+                connect(room->door(), &Door::hpChanged, this, [=]() { ui->doorHp->setValue(room->door()->hp());} );
+                connect(room, &Room::destroyed, this, [=]() {this->close();emit gameOver(false); });
+                connect(room, &Room::ghostM25, this, [=]() {m_ghost->setSpeed(m_ghost->speed()*0.5);});
+                connect(room, &Room::ghostAtt1, this, [=]() { m_ghost->setHp(m_ghost->hp()*0.99); });
             });
             connect(room, &Room::destroyed, this, [=]() {removeRoom(room);});
             connect(room, &Room::attackGhostT, this, &Map::attackGhost);
         }
 }
 
+void Map::removeRoom(Room* room) {
+    int i = m_rooms.indexOf(room);
+    m_rooms[i] = nullptr;
+    m_rooms.remove(i);
+}
+
+void Map::initHumanBots() {
+    long* nums = rand(3, 8);
+    for(int i = 0; i < 3; ++i) {
+        int skin = nums[i];
+        m_humanBots.append(new Human(m_skins[skin]));
+        m_humanBots[i]->setPos(57*15, 57*9);
+        m_scene->addItem(m_humanBots[i]);
+        int roomNum = QRandomGenerator::global()->bounded(0, 2) + i * 2;
+        connect(m_humanBots[i], &Human::nearTheBed, this, [=]() { m_rooms[roomNum]->setHuman(m_humanBots[i]); });
+        connect(m_humanBots[i], &Human::nearTheDoor, this, [=]() { m_rooms[roomNum]->startOpeningDoor(); });
+        m_humanBots[i]->moveToBed(m_rooms[roomNum]->door()->pos() + m_rooms[roomNum]->pos(),
+                                  m_rooms[roomNum]->bed()->pos() + m_rooms[roomNum]->pos());
+    }
+}
+
 void Map::attackGhost(QPointF pos, int dmg) {
     if (QLineF(pos, m_ghost->pos()).length() < 57*6) {
-        m_ghost->setHp(m_ghost->getHp() - dmg);
+        m_ghost->setHp(m_ghost->hp() - dmg);
         QGraphicsEllipseItem* bullet = new QGraphicsEllipseItem(0, 0, 10, 10);
         bullet->setPen(QPen(QColor(Qt::red)));
         bullet->setPos(pos);
@@ -120,6 +148,16 @@ void Map::attackGhost(QPointF pos, int dmg) {
         connect(bulletToGhostTimer, &QTimer::timeout, this, [this, bullet, bulletToGhostTimer]() mutable {bulletLine(bullet, m_ghost->pos(), bulletToGhostTimer);});
         bulletToGhostTimer->start();
     }
+}
+
+void Map::initGhost() {
+    m_ghost = new Ghost(QPixmap(":/images/resourses/images/ghost.png"), &m_rooms, m_ghostHillZone, 50, 50);
+    m_scene->addItem(m_ghost);
+    m_ghost->setPos(57*11, 57*9);
+    connect(m_ghost, &Ghost::moved, this, &Map::moveGhostHp);
+    connect(m_ghost, &Ghost::hpChanged, this, &Map::moveGhostHp);
+    connect(m_ghost, &Ghost::destroyed, this, [=]() {gameOver(true);});
+    m_ghostAndDoorTimer->start();
 }
 
 void Map::bulletLine(QGraphicsEllipseItem*& _bullet, QPointF _ghostPos, QTimer* _timer) {
@@ -133,12 +171,6 @@ void Map::bulletLine(QGraphicsEllipseItem*& _bullet, QPointF _ghostPos, QTimer* 
     _bullet->setPos((_bullet->pos() + _ghostPos) / 2);
 }
 
-void Map::removeRoom(Room* room) {
-    int i = m_rooms.indexOf(room);
-    m_rooms[i] = nullptr;
-    m_rooms.remove(i);
-}
-
 void Map::setCoins(int money, int energy) {
     ui->moneyCount->setText(QString::number(money));
     ui->energyCount->setText(QString::number(energy));
@@ -147,6 +179,10 @@ void Map::setCoins(int money, int energy) {
 void Map::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
+
+    if (key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Left || key == Qt::Key_Right)
+        return;
+
     int speedPer200ms = m_human->speed() / 5;
 
     if (key == Qt::Key_W)
@@ -165,13 +201,6 @@ void Map::keyPressEvent(QKeyEvent* event)
         m_human->moveBy(speedPer200ms, 0);
 
     QWidget::keyPressEvent(event);
-}
-
-Map::~Map()
-{
-    for (int i = 0; i < m_rooms.count(); ++i)
-        delete m_rooms[i];
-    delete ui;
 }
 
 void Map::openDoorInRoom() {
@@ -196,32 +225,43 @@ void Map::hitDoorInRoom() {
     for (int i = 0; i < m_rooms.count(); ++i) {
         if (abs(m_ghost->y() - (m_rooms[i]->door()->y()+m_rooms[i]->y())) <= 57
             && abs(m_ghost->x() - (m_rooms[i]->door()->x()+m_rooms[i]->x())) <= 57) {
-            m_rooms[i]->door()->setHp(m_rooms[i]->door()->getHp() - m_ghost->getDamage());
+            m_rooms[i]->door()->setHp(m_rooms[i]->door()->hp() - m_ghost->damage());
+            m_ghost->setHitCount(m_ghost->hitCount() + 1);
             emit doorHitted();
         }
     }
 }
 
-void Map::initGhost() {
-    m_ghost = new Ghost(QPixmap(":/images/resourses/images/ghost.png"), &m_rooms, m_ghostHillZone, 50, 50);
-    m_scene->addItem(m_ghost);
-    m_ghost->setPos(57*11, 57*9);
-    connect(m_ghost, &Ghost::moved, this, &Map::moveGhostHp);
-    connect(m_ghost, &Ghost::hpChanged, this, &Map::moveGhostHp);
-    m_ghostAndDoorTimer->start();
-}
-
 void Map::moveGhostHp() {
-    ui->ghostHp->setValue(m_ghost->getHp());
-    ui->ghostHp->setMaximum(m_ghost->getMaxHp());
+    ui->ghostHp->setValue(m_ghost->hp());
+    ui->ghostHp->setMaximum(m_ghost->maxHp());
     ui->ghostHp->setGeometry(m_ghost->x(), m_ghost->y() - 16, 51, 14);
     ui->ghostHp->show();
+}
+
+long* Map::rand(int n, int max) {
+    int x0 = std::time(nullptr);
+    long m = 4294967296;
+    int a = 214013;
+    int c = 2531011;
+    long* nums = new long[n];
+    nums[0] = x0;
+    for (int i = 1; i < n; ++i) {
+        nums[i] = (nums[i-1] * a + c);
+        nums[i] %= m;
+    }
+    for (int i = 0; i < n; ++i)
+        nums[i] %= max;
+    return nums;
 }
 
 void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
 {
     if (!time.second()) {
-        //if (!_human->isInRoom()) emit gameOver(false);
+        if (!m_human->isInRoom()) {
+            emit gameOver(false);
+            return;
+        }
         initGhost();
         ui->gameTime->show();
         ui->timeBeforeGhost->hide();
@@ -233,13 +273,17 @@ void Map::on_timeBeforeGhost_timeChanged(const QTime &time)
     }
     QTimer* t = new QTimer();
     connect(t, &QTimer::timeout, this, [=]() { ui->timeBeforeGhost->setTime(time.addSecs(-1)); t->stop(); delete t;});
-    t->start(1000);
-}
-
+    t->start(1000); }
 
 void Map::on_gameTime_timeChanged(const QTime &time)
 {
+    if (m_ghost->hp() <= 0) emit gameOver(true);
     QTimer* t = new QTimer();
     connect(t, &QTimer::timeout, this, [=]() { ui->gameTime->setTime(time.addSecs(1)); t->stop(); delete t;});
     t->start(1000);
+}
+
+void Map::on_pushButton_clicked()
+{
+    emit gameOver(false);
 }

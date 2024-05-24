@@ -9,7 +9,8 @@ class Human : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    explicit Human(const QPixmap pixmap, int width = 50, int height = 50, QObject *parent = nullptr);
+    explicit Human(const QPixmap pixmap, int width = 50, int height = 100, QObject *parent = nullptr);
+    ~Human();
 
     bool processCollidings(QList<QGraphicsItem *> collidins);
     void moveToBed(QPointF doorPos, QPointF bedPos);

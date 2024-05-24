@@ -9,6 +9,13 @@ Human::Human(const QPixmap pixmap, int width, int height, QObject *parent)
     : QObject{parent}, QGraphicsItem(), m_pixmapWidth(width), m_pixmapHeight(height), m_pixmap(pixmap)
 {}
 
+Human::~Human() {
+    for (int i = 0; i < m_movingTimers.count(); ++i) {
+        m_movingTimers[i]->stop();
+        m_movingTimers[i]->deleteLater();
+    }
+}
+
 void Human::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
     QPointF currentPos = pos();
@@ -39,8 +46,7 @@ void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
 
     int flag = 1;
 
-    if (x()>doorPos.x()) flag = -1;
-    else flag = 1;
+    flag = x()>doorPos.x() ? -1 : 1;
     connect(m_movingTimers[0], &QTimer::timeout, this, [=]() {
         if (x() - doorPos.x() < 6 && x() > doorPos.x()) {
             m_movingTimers[0]->stop();
@@ -48,8 +54,7 @@ void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
         }
         setX(x() + 3 * flag);
     });
-    if (y()>bedPos.y()) flag = -1;
-    else flag = 1;
+    flag = y()>bedPos.y() ? -1 : 1;
     connect(m_movingTimers[1], &QTimer::timeout, this, [=]() {
         if (abs(y() - doorPos.y()) <= 57*2) emit nearTheDoor();
         if (y() == bedPos.y() || (doorPos.x() == bedPos.x() && abs(y() - bedPos.y()) <= 57*2 + 2)) {
@@ -58,8 +63,7 @@ void Human::moveToBed(QPointF doorPos, QPointF bedPos) {
         }
         setY(y() + 3 * flag);
     });
-    if (doorPos.x()>bedPos.x()) flag = -1;
-    else flag = 1;
+    flag = doorPos.x()>bedPos.x() ? -1 : 1;
     connect(m_movingTimers[2], &QTimer::timeout, this, [=]() {
         if (abs(x() - bedPos.x()) <= 60) {
             m_movingTimers[2]->stop();
@@ -85,7 +89,6 @@ bool Human::isInRoom() {
 void Human::setSpeed(int speed) {
     m_speed = speed;
 }
-
 
 bool Human::processCollidings(QList<QGraphicsItem *> collidins) {
     bool can_move = true;

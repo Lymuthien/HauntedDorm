@@ -2,15 +2,27 @@
 #include <QTimer>
 
 FloorCage::FloorCage(QPixmap pixmap, int* money, int* energy, QObject *parent)
-    : Cage{pixmap, money, energy}, m_attackTimer(new QTimer), m_emptyPixmap(pixmap)
+    : Cage{pixmap, money, energy}
+    , m_attackTimer(new QTimer)
+    , m_emptyPixmap(pixmap)
 {
     m_attackTimer->setInterval(1000);
     connect(m_attackTimer, &QTimer::timeout, this, [=]() {emit attackGhost(this);});
     setType(UninitializedType);
 }
 
-void FloorCage::setBuilding(BuildingType type) {
+FloorCage::~FloorCage()
+{
+    m_attackTimer->stop();
+    delete m_attackTimer;
+    delete m_form;
+    delete m_upgradeForm;
+}
+
+void FloorCage::setBuilding(BuildingType type)
+{
     if (getType() != UninitializedType && type != UninitializedType) return;
+
     switch (type) {
     case UninitializedType:
         deleteBuilding();
@@ -21,6 +33,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 256);
             setCurrentEnergy(currentEnergy() - 256);
             setType(type);
+            emit addFunction(HookahType);
         }
         break;
     case ShellyType:
@@ -43,10 +56,11 @@ void FloorCage::setBuilding(BuildingType type) {
         break;
     case DotaType:
         if (currentEnergy() > 128) {
-            _pixmap = QPixmap(":/images/resourses/images/dota.png");
+            _pixmap = QPixmap(":/images/resourses/images/dota2.png");
             setEnergyCost(energyCost() + 128);
             setCurrentEnergy(currentEnergy() - 128);
             setType(type);
+            emit addFunction(DotaType);
         }
         break;
     case HammerType:
@@ -55,6 +69,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 512);
             setCurrentEnergy(currentEnergy() - 512);
             setType(type);
+            emit addFunction(HammerType);
         }
         break;
     case SixBybeType:
@@ -63,6 +78,7 @@ void FloorCage::setBuilding(BuildingType type) {
             setEnergyCost(energyCost() + 1024);
             setCurrentEnergy(currentEnergy() - 1024);
             setType(type);
+            emit addFunction(SixBybeType);
         }
         break;
     default:
@@ -75,41 +91,51 @@ void FloorCage::setBuilding(BuildingType type) {
     show();
 }
 
-void FloorCage::deleteBuilding() {
-    if (m_attackTimer->isActive()) m_attackTimer->stop();
+void FloorCage::deleteBuilding()
+{
+    if (m_attackTimer->isActive())
+        m_attackTimer->stop();
     m_moneyPerSec = 0;
     m_energyPerSec = 0;
+    m_attackTimer->stop();
     setCurrentMoney(currentMoney() + moneyCost() * 0.75);
     setCurrentEnergy(currentEnergy() + energyCost() * 0.75);
     _pixmap = m_emptyPixmap;
-    update();
     setType(UninitializedType);
     setVisible(m_visible);
     m_free = true;
+    update();
     Cage::deleteBuilding();
 }
 
-void FloorCage::clicked() {
-    if (getType() == UninitializedType) {
-        if (m_form == nullptr) {
+void FloorCage::clicked()
+{
+    if (getType() == HookahType || getType() == DotaType || getType() == HammerType || getType() == SixBybeType)
+        return;
+    if (getType() == UninitializedType)
+    {
+        if (m_form == nullptr)
+        {
             m_form = new AddBuildingForm(this);
             connect(m_form, &AddBuildingForm::addBuilding, this, &FloorCage::setBuilding);
         }
         m_form->show();
     }
-    else {
+    else
+    {
         if (m_upgradeForm == nullptr)
             m_upgradeForm = new UpgrateForm(this);
         m_upgradeForm->show();
     }
-
 }
 
-bool FloorCage::visible() {
+bool FloorCage::visible()
+{
     return m_visible;
 }
 
-void FloorCage::setVisible(bool visible) {
+void FloorCage::setVisible(bool visible)
+{
     if (visible)
         show();
     else
@@ -117,13 +143,15 @@ void FloorCage::setVisible(bool visible) {
     m_visible = visible;
 }
 
-bool FloorCage::free() {
+bool FloorCage::free()
+{
     return m_free;
 }
 
 bool FloorCage::upgrade()
 {
-    if (Cage::upgrade()) {
+    if (Cage::upgrade())
+    {
         m_moneyPerSec *= 2;
         m_energyPerSec *= 2;
         m_damagePerSec *= 2;
@@ -131,14 +159,17 @@ bool FloorCage::upgrade()
     return true;
 }
 
-int FloorCage::moneyPerSec() {
+int FloorCage::moneyPerSec()
+{
     return m_moneyPerSec;
 }
 
-int FloorCage::energyPerSec() {
+int FloorCage::energyPerSec()
+{
     return m_energyPerSec;
 }
 
-int FloorCage::damagePerSec() {
+int FloorCage::damagePerSec()
+{
     return m_damagePerSec;
 }

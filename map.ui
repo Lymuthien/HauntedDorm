@@ -334,6 +334,19 @@ border-radius: 10px;</string>
     <iconset theme="multimedia-volume-control"/>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>1770</x>
+     <y>20</y>
+     <width>89</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Сдаться</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

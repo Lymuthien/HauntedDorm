@@ -16,6 +16,7 @@ Room::Room(bool doorUp, QObject* parent)
     for (int i = 0; i < 14; ++i) {
         m_interactFloor.append(new FloorCage(QPixmap(":/images/resourses/images/addBuilding-cage.png"), &m_money, &m_energy));
         connect(m_interactFloor[i], &FloorCage::attackGhost, this, &Room::attackGhost);
+        connect(m_interactFloor[i], &FloorCage::addFunction, this, &Room::addFunction);
     }
 
     int roomNumber = QRandomGenerator::global()->bounded(1, 5);
@@ -39,28 +40,44 @@ Room::Room(bool doorUp, QObject* parent)
         m_interactFloor[i]->setVisible(false);
 
     addAllItems();
-    connect(m_door, &Door::destroyed, this, [=]() {m_door = nullptr; delete this;});
+    connect(m_door, &Door::destroyed, this, [=]() {
+        m_door = nullptr;
+        if (!m_deleted) delete this;
+    });
 }
 
 Room::~Room() {
-    delete m_openDoorTimer;
+    m_deleted = true;
+    m_closeDoorTimer->stop();
     delete m_closeDoorTimer;
+    m_openDoorTimer->stop();
+    delete m_openDoorTimer;
+    m_gameCycleTimer->stop();
+    delete m_gameCycleTimer;
+    m_botCycleTimer->stop();
+    delete m_botCycleTimer;
     delete m_sleepBtn;
+    for (int i = 0; i < m_interactBtns.count(); ++i)
+        delete m_interactBtns[i];
+    for (int i = 0; i < m_interactFloor.count(); ++i)
+        delete m_interactFloor[i];
     for (int i = 0; i < m_floor.count(); ++i)
         delete m_floor[i];
     for (int i = 0; i < m_walls.count(); ++i)
         delete m_walls[i];
-    for (int i = 0; i < m_interactBtns.count(); ++i)
-        delete m_interactBtns[i];
-    /*
-    delete _bed;
-    //delete _door;
+    delete m_bed;
+    delete m_door;
+}
 
-
-*/
-    /*
-    QVector<FloorCage*> _interactFloor;
-    Human* _human;*/
+void Room::addFunction(Cage::BuildingType _type) {
+    if (_type == Cage::HookahType)
+        emit ghostM25();
+    else if (_type == Cage::DotaType)
+        emit ghostM25();
+    else if (_type == Cage::HammerType)
+        emit ghostAtt1();
+    else if (_type == Cage::SixBybeType)
+        ;
 }
 
 void Room::attackGhost(FloorCage* _cage) {
@@ -110,7 +127,7 @@ void Room::showInteractingCages() {
         m_interactBtns[14+i]->show();
 }
 
-void Room::setHuman(Human* human) {
+void Room::setHuman(Human* human, bool bot) {
     m_human = human;
     m_human->setPos(x()+m_bed->x(), y()+m_bed->y());
     QGraphicsPixmapItem* h = new QGraphicsPixmapItem(m_human->getPixmap().scaled(50, 50));
@@ -118,7 +135,7 @@ void Room::setHuman(Human* human) {
     addToGroup(h);
     m_human->setPos(-57, -57);
     m_human->setInRoom();
-    m_botCycleTimer->start();
+    if (bot) m_botCycleTimer->start();
     m_gameCycleTimer->start();
     setFree(false);
 }
@@ -133,29 +150,58 @@ void Room::initCycle() {
 }
 
 void Room::initBotCycle() {
-    if (m_bed->level() == 0) m_bed->upgrade(); //26
-    if (m_bed->level() == 1) {
-        m_interactFloor[0]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
-        m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
+    int a = findClosest(m_interactFloor, m_bed->y());
+    for (int i = 0; i < 5; ++i) {
+        if (m_bed->level() == i) m_bed->upgrade(); //26
+        if (m_bed->level() == 1) {
+            m_interactFloor[a]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[1]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[13]->setBuilding(Cage::ShellyType); // 8
+            m_interactFloor[12]->setBuilding(Cage::ShellyType); // 8
+        }
+        if (m_door->level() == i) m_door->upgrade(); // 50
+        if (m_bed->level() == i + 1) m_bed->upgrade(); //52
+        if (m_interactFloor[0]->level() == i) m_interactFloor[0]->upgrade();
+        if (m_interactFloor[1]->level() == i) m_interactFloor[1]->upgrade();
+        if (m_door->level() == i + 1) m_door->upgrade(); // 100
+        if (m_bed->level() == i + 2) m_bed->upgrade(); //104
+        m_interactFloor[i + 2]->setBuilding(Cage::Ps4Type); // 200
+        if (m_interactFloor[i + 2]->getType() == Cage::Ps4Type) {
+            if (m_interactFloor[13]->level() == i) m_interactFloor[13]->upgrade();
+            if (m_interactFloor[12]->level() == i) m_interactFloor[12]->upgrade();
+            int n = QRandomGenerator::global()->bounded(4);
+            m_interactFloor[11 - i]->setBuilding(Cage::BuildingType(n));
     }
-    if (m_door->level() == 0) m_door->upgrade(); // 50
-    if (m_bed->level() == 1) m_bed->upgrade(); //52
-    if (m_interactFloor[0]->level() == 0) m_interactFloor[0]->upgrade();
-    if (m_interactFloor[1]->level() == 0) m_interactFloor[1]->upgrade();
-    if (m_door->level() == 1) m_door->upgrade(); // 100
-    if (m_bed->level() == 2) m_bed->upgrade(); //104
-    m_interactFloor[2]->setBuilding(Cage::Ps4Type); // 200
-    if (m_interactFloor[2]->getType() == Cage::Ps4Type) {
-        if (m_interactFloor[13]->level() == 0) m_interactFloor[13]->upgrade();
-        if (m_interactFloor[12]->level() == 0) m_interactFloor[12]->upgrade();
     }
 }
 
+int Room::findClosest(QVector<FloorCage*> arr, int y) {
+    int left = 0, right = arr.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid]->y() == y) {
+            return mid;
+        } else if (arr[mid]->y() < y) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    if (right < 0) {
+        return 0;
+    } else if (left >= static_cast<int>(arr.size())) {
+        return arr.size()-1;
+    } else {
+        return std::abs(arr[left]->y() - y) < std::abs(arr[right]->y() - y) ? left : right;
+    }
+}
+
+
 void Room::setFree(bool status) {
     m_free = status;
-    startClosingDoor();
+    if (!status) startClosingDoor();
 }
 
 bool Room::isFree() {

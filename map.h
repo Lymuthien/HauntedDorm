@@ -26,13 +26,14 @@ signals:
     void settingsBtnClicked();
     void btnClicked();
     void doorHitted();
-
     void gameOver(bool victory);
 
 private slots:
     void keyPressEvent(QKeyEvent* event);
     void on_timeBeforeGhost_timeChanged(const QTime &time);
     void on_gameTime_timeChanged(const QTime &time);
+
+    void on_pushButton_clicked();
 
 private:
     void buildWalls();
@@ -43,6 +44,8 @@ private:
     void initGhost();
     void attackGhost(QPointF pos, int dmg);
     void moveGhostHp();
+    void endGame();
+    long* rand(int n, int max);
     void removeRoom(Room *room);
     void setCoins(int money, int energy);
     void bulletLine(QGraphicsEllipseItem *&_bullet, QPointF _ghostPos, QTimer *_timer);

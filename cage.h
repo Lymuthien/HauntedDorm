@@ -12,21 +12,23 @@ public:
     explicit Cage(const QPixmap pixmap, int* _currentMoney = nullptr, int* _currentEnergy = nullptr, QObject *parent = nullptr);
 
     enum BuildingType {
+        HookahType,
+        DotaType,
+        HammerType,
+        SixBybeType,
         UninitializedType,
         DoorType,
         BedType,
-        HookahType,
         ShellyType,
-        Ps4Type,
-        DotaType,
-        HammerType,
-        SixBybeType
+        Ps4Type
     };
+    BuildingType getType();
 
     QRectF boundingRect() const;
+
     virtual bool upgrade();
     virtual void deleteBuilding();
-    BuildingType getType();
+
     void setType(BuildingType type);
     QString getTypeString();
     QPixmap getPixmap();
@@ -45,6 +47,7 @@ protected:
 
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*);
+
     BuildingType _type;
     int m_moneyCost = 0, m_energyCost = 0, m_level = 0;
     int* m_currentMoney = nullptr;

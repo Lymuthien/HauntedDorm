@@ -106,37 +106,6 @@ QPushButton:pressed {
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="shopBtn">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>620</y>
-     <width>141</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QPushButton {
-	background: rgba(255, 33, 33, 0);
-	border: 0px red;
-	color: rgb(51, 32, 36);
-	font: 600 28px &quot;URW Gothic&quot;;
-}
-
-QPushButton:hover {
-	color: rgba(51, 32, 36, 0.5);
-}
-
-
-QPushButton:pressed {
-	color: rgb(23, 10, 13);
-}
-</string>
-   </property>
-   <property name="text">
-    <string>Магазин</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -288,8 +257,10 @@ QPushButton:pressed {
 }
 
 QPushButton {
+	font: 30px;
+	color: rgb(236, 221, 235);
 	background: rgba(212, 83, 150, 0.3);
-	border: 2px rgb(112, 21, 68);
+	border: 20px rgb(112, 21, 68);
 	border-radius: 30px;
 }
 
@@ -313,12 +284,15 @@ QPushButton:pressed {
       <x>0</x>
       <y>0</y>
       <width>527</width>
-      <height>1292</height>
+      <height>1548</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="4" column="0">
-      <widget class="QPushButton" name="pushButton_12">
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButton_14">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -332,15 +306,18 @@ QPushButton:pressed {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-6.png)</string>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>3260</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="pushButton_5">
+     <item row="2" column="0">
+      <widget class="QPushButton" name="pushButton_13">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -354,15 +331,91 @@ QPushButton:pressed {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-5.png)</string>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>1575</string>
        </property>
       </widget>
      </item>
      <item row="0" column="0">
+      <widget class="QPushButton" name="pushButton_6">
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-1.png)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton_10">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-2.png);
+</string>
+       </property>
+       <property name="text">
+        <string>2228</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-4.png)</string>
+       </property>
+       <property name="text">
+        <string>1485</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
       <widget class="QPushButton" name="skin1Btn">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -379,78 +432,15 @@ QPushButton:pressed {
         <string notr="true">border-image: url(:/skins/resourses/images/skins/german.png)</string>
        </property>
        <property name="text">
-        <string/>
+        <string>5555</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="pushButton_9">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="skin4Btn">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image: url(:/skins/resourses/images/skins/nikita.png);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="pushButton_8">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>250</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
+     <item row="5" column="0">
       <widget class="QPushButton" name="skin3Btn">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -467,12 +457,15 @@ QPushButton:pressed {
         <string notr="true">border-image: url(:/skins/resourses/images/skins/tanya.png)</string>
        </property>
        <property name="text">
-        <string/>
+        <string>5555</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="4" column="1">
       <widget class="QPushButton" name="skin2Btn">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -486,15 +479,20 @@ QPushButton:pressed {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">border-image: url(:/skins/resourses/images/skins/katya.png);</string>
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/katya.png);
+color: black
+</string>
        </property>
        <property name="text">
-        <string/>
+        <string>5555</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="pushButton_10">
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButton_12">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -508,15 +506,43 @@ QPushButton:pressed {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-3.png);</string>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>640</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="skin4Btn">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/nikita.png);</string>
+       </property>
+       <property name="text">
+        <string>5555</string>
        </property>
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QPushButton" name="pushButton_6">
+      <widget class="QPushButton" name="pushButton_16">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>250</width>
@@ -530,10 +556,36 @@ QPushButton:pressed {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-7.png)</string>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>950</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="pushButton_15">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(:/skins/resourses/images/skins/skin-8.png);
+color: black</string>
+       </property>
+       <property name="text">
+        <string>1350</string>
        </property>
       </widget>
      </item>
@@ -551,6 +603,23 @@ QPushButton:pressed {
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>970</y>
+     <width>111</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px black;
+border-radius: 12px;</string>
+   </property>
+   <property name="text">
+    <string>Выход</string>
    </property>
   </widget>
  </widget>

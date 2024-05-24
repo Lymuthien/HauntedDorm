@@ -168,7 +168,7 @@ void Ghost::goToPoint(QPointF point)
 void Ghost::findRandomRoom(QVector<Room*>* room, int roomNum) {
     QVector<Room*>& rooms = *room;
 
-    heapSort(rooms, rooms.count());
+    heapSort(rooms);
     for (int i = 0; i < rooms.count(); ++i)
         if (!rooms[i]->isFree())
         {
@@ -181,13 +181,13 @@ void Ghost::findRandomRoom(QVector<Room*>* room, int roomNum) {
 void Ghost::heapify(QVector<Room*> roms, int n, int i)
 {
     int largest = i;
-    int l = 2*i + 1;
-    int r = 2*i + 2;
-    if (l < n && roms[l]->door()->hp() > roms[largest]->door()->hp())
-        largest = l;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+    if (left < n && roms[left]->door()->hp() > roms[largest]->door()->hp())
+        largest = left;
 
-    if (r < n && roms[r]->door()->hp() > roms[largest]->door()->hp())
-        largest = r;
+    if (right < n && roms[right]->door()->hp() > roms[largest]->door()->hp())
+        largest = right;
 
     if (largest != i)
     {
@@ -196,8 +196,9 @@ void Ghost::heapify(QVector<Room*> roms, int n, int i)
     }
 }
 
-void Ghost::heapSort(QVector<Room*> roms, int n)
+void Ghost::heapSort(QVector<Room*> roms)
 {
+    int n = roms.size();
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(roms, n, i);
 

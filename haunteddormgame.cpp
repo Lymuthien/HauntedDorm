@@ -41,20 +41,7 @@ void HauntedDormGame::readCache()
     QFile cache("cache.txt");
     if (!cache.open(QIODevice::ReadOnly | QIODevice::Text)) return;
     QTextStream in(&cache);
-/*
-    QStringList settingsCache = in.readLine().split(" ");
-    for (int i = 0; i < 3; ++i)
-        m_settings[i] = settingsCache[i].toInt() ^ KEY[i % 11];
 
-    m_coins = in.readLine().toInt() ^ KEY[0];
-
-    int skinNum = in.readLine().toInt() ^ KEY[0];
-    m_menu->setSkin(m_skins[skinNum]);
-
-    QStringList skinsCache = in.readLine().split(" ");
-    for (int i = 0; i < 12; ++i)
-        m_skinsCode[i] = skinsCache[i].toInt() ^ KEY[i % 11];
-    m_menu->updateBtnText();*/
     QStringList settingsCache = in.readLine().split(" ");
     for (int i = 0; i < 3; ++i)
         m_settings[i] = xorEncrypt(settingsCache[i]).toInt();

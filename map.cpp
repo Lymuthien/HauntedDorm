@@ -122,9 +122,9 @@ void Map::removeRoom(Room* room) {
 }
 
 void Map::initHumanBots() {
-    long* nums = rand(3, 8);
+    long* nums = randNumbers(3);
     for(int i = 0; i < 3; ++i) {
-        int skin = nums[i];
+        int skin = nums[i] % 8;
         m_humanBots.append(new Human(m_skins[skin]));
         m_humanBots[i]->setPos(57*15, 57*9);
         m_scene->addItem(m_humanBots[i]);
@@ -239,7 +239,7 @@ void Map::moveGhostHp() {
     ui->ghostHp->show();
 }
 
-long* Map::rand(int n, int max) {
+long* Map::randNumbers(int n) {
     int x0 = std::time(nullptr);
     long m = 4294967296;
     int a = 214013;
@@ -250,8 +250,7 @@ long* Map::rand(int n, int max) {
         nums[i] = (nums[i-1] * a + c);
         nums[i] %= m;
     }
-    for (int i = 0; i < n; ++i)
-        nums[i] %= max;
+
     return nums;
 }
 

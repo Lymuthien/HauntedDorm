@@ -30,7 +30,7 @@ private:
     void goToHillZone();
     void goToPoint(QPointF point);
     void heapify(QVector<Room*> roms, int n, int i);
-    void heapSort(QVector<Room*> roms, int n);
+    void heapSort(QVector<Room*> roms);
 
     struct Edge {
         int source, destination, weight;

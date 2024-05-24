@@ -52,7 +52,7 @@ private:
     void buildRoom4(bool doorUp, int flag = 0);
     void initCycle();
     void initBotCycle();
-    int findClosest(QVector<FloorCage*> arr, int y);
+    int binarySearch(const QVector<FloorCage *> arr, const int y);
 
 
     bool m_free = true, m_deleted = false;

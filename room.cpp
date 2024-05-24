@@ -150,7 +150,7 @@ void Room::initCycle() {
 }
 
 void Room::initBotCycle() {
-    int a = findClosest(m_interactFloor, m_bed->y());
+    int a = binarySearch(m_interactFloor, m_bed->y());
     for (int i = 0; i < 5; ++i) {
         if (m_bed->level() == i) m_bed->upgrade(); //26
         if (m_bed->level() == 1) {
@@ -175,7 +175,7 @@ void Room::initBotCycle() {
     }
 }
 
-int Room::findClosest(QVector<FloorCage*> arr, int y) {
+int Room::binarySearch(const QVector<FloorCage*> arr, const int y) {
     int left = 0, right = arr.size() - 1;
 
     while (left <= right) {
